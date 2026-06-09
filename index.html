@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Golden Limits — Performance</title>
+<style>
+  :root{
+    --bg:#0b0d12; --bg2:#0f1218; --card:#151a24; --card2:#1b2230;
+    --border:#262d3d; --border2:#313a4e;
+    --gold:#e3b94e; --gold-soft:#f0d089; --gold-dim:#8a7333;
+    --green:#27c281; --green-dim:#16996b; --red:#ef5b5b;
+    --txt:#e8eaf0; --muted:#8b93a7; --muted2:#5e6678;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%, #161b26 0%, var(--bg) 55%);
+    color:var(--txt); min-height:100vh; padding:32px 20px 60px; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto}
+
+  /* Header */
+  header{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:28px}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{
+    width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:24px;
+    background:linear-gradient(145deg,#2a2208,#16110a);border:1px solid var(--gold-dim);
+    box-shadow:0 0 24px rgba(227,185,78,.18);
+  }
+  .brand h1{font-size:22px;font-weight:700;letter-spacing:.3px}
+  .brand h1 span{color:var(--gold)}
+  .brand p{font-size:12.5px;color:var(--muted);margin-top:2px;letter-spacing:.4px}
+  .hmeta{text-align:right;font-size:12px;color:var(--muted)}
+  .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;
+    background:rgba(227,185,78,.10);color:var(--gold-soft);border:1px solid var(--gold-dim);letter-spacing:.5px}
+  .updated{margin-top:8px;color:var(--muted2)}
+
+  /* KPI grid */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .kpi{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--border);
+    border-radius:16px;padding:18px 18px 16px;position:relative;overflow:hidden}
+  .kpi .lab{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
+  .kpi .val{font-size:30px;font-weight:750;line-height:1;letter-spacing:.5px}
+  .kpi .sub{font-size:12px;color:var(--muted);margin-top:7px}
+  .kpi.feature{background:linear-gradient(160deg,#1d2233,#14171f);border-color:var(--gold-dim)}
+  .kpi.feature .val{color:var(--gold)}
+  .pos{color:var(--green)} .neg{color:var(--red)}
+  .ring{position:absolute;right:-26px;top:-26px;width:90px;height:90px;border-radius:50%;
+    background:radial-gradient(circle,rgba(227,185,78,.12),transparent 70%)}
+
+  /* Layout cards */
+  .card{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--border);
+    border-radius:18px;padding:20px 22px;margin-bottom:18px}
+  .card h2{font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);
+    font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .card h2::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold)}
+  .grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+
+  /* Chart */
+  .chartbox{width:100%}
+  svg{display:block;width:100%;overflow:visible}
+  .axis{stroke:var(--border2);stroke-width:1}
+  .gridline{stroke:#1d2433;stroke-width:1}
+  .tick{fill:var(--muted2);font-size:11px}
+  .eqline{fill:none;stroke:var(--gold);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+  .dot{fill:var(--gold)}
+  .legend{display:flex;gap:18px;margin-top:6px;font-size:12px;color:var(--muted)}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+
+  /* Outcome bars */
+  .ob{margin-bottom:14px}
+  .ob:last-child{margin-bottom:0}
+  .ob .row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+  .ob .row b{font-weight:650}
+  .bar{height:9px;border-radius:6px;background:#222a39;overflow:hidden}
+  .bar>span{display:block;height:100%;border-radius:6px}
+
+  /* Table */
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{text-align:left;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;
+    letter-spacing:.5px;padding:0 12px 12px;border-bottom:1px solid var(--border)}
+  th.num,td.num{text-align:right}
+  td{padding:13px 12px;border-bottom:1px solid #1a212e}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(255,255,255,.012)}
+  .pill{display:inline-block;padding:3px 9px;border-radius:7px;font-size:11.5px;font-weight:650;letter-spacing:.3px}
+  .p-long{background:rgba(39,194,129,.12);color:var(--green)}
+  .p-short{background:rgba(239,91,91,.12);color:var(--red)}
+  .tag{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600}
+  .t-tp3{background:rgba(227,185,78,.15);color:var(--gold-soft)}
+  .t-tp1{background:rgba(39,194,129,.12);color:var(--green)}
+  .t-sl{background:rgba(239,91,91,.13);color:var(--red)}
+  .note{color:var(--muted);font-size:12.5px}
+  .id{color:var(--muted2);font-variant-numeric:tabular-nums}
+  .pipv{font-weight:700;font-variant-numeric:tabular-nums}
+
+  /* Source breakdown (limits vs markets) */
+  .srcgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .src{background:linear-gradient(160deg,var(--card2),var(--bg2));border:1px solid var(--border);
+    border-radius:14px;padding:18px 18px 16px}
+  .src.limit{border-color:var(--gold-dim)}
+  .src .shead{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+  .src .ico{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:15px;
+    background:rgba(255,255,255,.04);border:1px solid var(--border2)}
+  .src.limit .ico{background:rgba(227,185,78,.10);border-color:var(--gold-dim)}
+  .src .stitle{font-size:14px;font-weight:700;letter-spacing:.3px}
+  .src .sdesc{font-size:11.5px;color:var(--muted2);margin-top:1px}
+  .src .snet{font-size:26px;font-weight:750;line-height:1;letter-spacing:.4px;margin:4px 0 12px}
+  .src .srow{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);
+    padding:7px 0;border-top:1px solid #1a212e}
+  .src .srow b{color:var(--txt);font-weight:650;font-variant-numeric:tabular-nums}
+  @media(max-width:860px){ .srcgrid{grid-template-columns:1fr} }
+
+  /* Position size calculator */
+  .calcrow{display:flex;gap:22px;align-items:stretch;flex-wrap:wrap}
+  .lotbox{flex:0 0 220px;display:flex;flex-direction:column;justify-content:center;
+    background:linear-gradient(160deg,var(--card2),var(--bg2));border:1px solid var(--gold-dim);
+    border-radius:14px;padding:18px}
+  .lotbox label{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:9px}
+  .lotbox input{width:100%;background:#0c0f15;border:1px solid var(--border2);border-radius:10px;
+    color:var(--gold);font-size:30px;font-weight:750;padding:10px 14px;outline:none;
+    font-variant-numeric:tabular-nums;text-align:center}
+  .lotbox input:focus{border-color:var(--gold)}
+  .lothint{font-size:11.5px;color:var(--muted2);margin-top:9px;text-align:center}
+  .lothint b{color:var(--gold-soft)}
+  .calcout{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;min-width:280px}
+  .cstat{background:linear-gradient(160deg,var(--card2),var(--bg2));border:1px solid var(--border);
+    border-radius:13px;padding:15px 14px;display:flex;flex-direction:column;justify-content:center}
+  .cstat.feat{border-color:var(--gold-dim);background:linear-gradient(160deg,#1d2233,#14171f)}
+  .cstat .clab{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+  .cstat .cval{font-size:23px;font-weight:750;line-height:1;letter-spacing:.3px;font-variant-numeric:tabular-nums}
+  .cstat .csub{font-size:11.5px;color:var(--muted2);margin-top:6px;font-variant-numeric:tabular-nums}
+  @media(max-width:860px){ .calcout{grid-template-columns:repeat(2,1fr)} .lotbox{flex:1 1 100%} }
+
+  footer{text-align:center;color:var(--muted2);font-size:12px;margin-top:30px;line-height:1.7}
+  footer b{color:var(--muted)}
+
+  @media(max-width:860px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid2{grid-template-columns:1fr}
+    .hidem{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="logo">🏆</div>
+      <div>
+        <h1>Golden <span>Limits</span></h1>
+        <p>Performance Dashboard · Gold (XAUUSD)</p>
+      </div>
+    </div>
+    <div class="hmeta">
+      <span class="badge">PRIVATE · PARTNERS</span>
+      <div class="updated" id="updated"></div>
+    </div>
+  </header>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="card">
+    <h2>Position Size — estimate $ P&amp;L by your lot</h2>
+    <div class="calcrow">
+      <div class="lotbox">
+        <label>Your lot size</label>
+        <input id="lot" type="number" step="0.01" min="0" value="0.01" />
+        <div class="lothint">1 pip = <b>$<span id="pipval">0.10</span></b> per trade</div>
+      </div>
+      <div class="calcout" id="calcout"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Equity Curve — cumulative pips</h2>
+    <div class="chartbox" id="equity"></div>
+    <div class="legend"><span><i style="background:var(--gold)"></i>Cumulative result (pips)</span></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>Daily Performance</h2>
+      <div class="chartbox" id="daily"></div>
+    </div>
+    <div class="card">
+      <h2>Outcome Breakdown</h2>
+      <div id="outcomes"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Limits vs Markets — source breakdown</h2>
+    <div class="srcgrid" id="sources"></div>
+  </div>
+
+  <div class="card">
+    <h2>Trade History</h2>
+    <div style="overflow-x:auto">
+      <table id="history">
+        <thead><tr>
+          <th>#</th><th>Date</th><th>Side</th><th class="num">Entry</th>
+          <th>Result</th><th class="num">Pips</th><th class="num">Grade</th><th class="hidem">Note</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <b>Golden Limits</b> — internal performance tracker.<br>
+    Figures are achieved results in pips (1 pip = $0.1). Educational only, not financial advice.
+  </footer>
+
+</div>
+
+<script src="data.js"></script>
+<script>
+/* ============================================================
+   Dashboard logic. DATA lives in data.js (window.GL_DATA) —
+   that is the single source of truth. Update data.js only;
+   everything below recomputes automatically.
+============================================================ */
+const D = window.GL_DATA || { trades:[], activity:{cancelled:0,pending:0}, last_updated:"" };
+const TRADES = D.trades;
+const ACTIVITY = { cancelled: D.activity.cancelled, pending: D.activity.pending };
+const LAST_UPDATED = D.last_updated;
+
+/* ===== compute stats ===== */
+const wins = TRADES.filter(t=>t.pips>0);
+const losses = TRADES.filter(t=>t.pips<0);
+const net = TRADES.reduce((s,t)=>s+t.pips,0);
+const grossWin = wins.reduce((s,t)=>s+t.pips,0);
+const grossLoss = Math.abs(losses.reduce((s,t)=>s+t.pips,0));
+const winRate = TRADES.length ? Math.round(wins.length/TRADES.length*100) : 0;
+const pf = grossLoss ? (grossWin/grossLoss) : grossWin;
+const avgWin = wins.length ? Math.round(grossWin/wins.length) : 0;
+const avgLoss = losses.length ? Math.round(grossLoss/losses.length) : 0;
+const best = TRADES.reduce((a,t)=>t.pips>a.pips?t:a, TRADES[0]);
+const tp3 = TRADES.filter(t=>t.outcome==="TP3").length;
+const fmt = n => (n>0?"+":"") + n;
+
+/* ===== KPI cards ===== */
+const kpis = [
+  { lab:"Net Result", val:fmt(net)+" pips", cls:net>=0?"pos":"neg", sub:"$"+(net*0.1).toFixed(0)+" @ $0.1/pip", feature:true },
+  { lab:"Win Rate", val:winRate+"%", sub:wins.length+" wins · "+losses.length+" losses" },
+  { lab:"Total Trades", val:TRADES.length, sub:ACTIVITY.cancelled+" cancelled · "+ACTIVITY.pending+" expired" },
+  { lab:"Full Winners (TP3)", val:tp3, sub:"all 3 targets hit" },
+  { lab:"Profit Factor", val:pf.toFixed(2), sub:"gross win ÷ gross loss" },
+  { lab:"Avg Win", val:"+"+avgWin, cls:"pos", sub:"pips per winner" },
+  { lab:"Avg Loss", val:"-"+avgLoss, cls:"neg", sub:"pips per loser" },
+  { lab:"Best Trade", val:"+"+best.pips, cls:"pos", sub:"#"+best.id+" · "+best.dir }
+];
+document.getElementById("kpis").innerHTML = kpis.map(k=>`
+  <div class="kpi ${k.feature?"feature":""}">
+    <div class="ring"></div>
+    <div class="lab">${k.lab}</div>
+    <div class="val ${k.cls||""}">${k.val}</div>
+    <div class="sub">${k.sub}</div>
+  </div>`).join("");
+document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
+
+/* ===== Equity curve ===== */
+(function(){
+  const W=820,H=240,P={l:46,r:16,t:16,b:28};
+  let cum=0; const pts=[{x:0,y:0}];
+  TRADES.forEach(t=>{cum+=t.pips;pts.push({x:pts.length,y:cum});});
+  const ys=pts.map(p=>p.y); const ymax=Math.max(...ys,0), ymin=Math.min(...ys,0);
+  const span=(ymax-ymin)||1;
+  const sx=i=>P.l+(i/(pts.length-1))*(W-P.l-P.r);
+  const sy=v=>P.t+(1-(v-ymin)/span)*(H-P.t-P.b);
+  const line=pts.map((p,i)=>(i?"L":"M")+sx(i).toFixed(1)+" "+sy(p.y).toFixed(1)).join(" ");
+  const area=line+` L ${sx(pts.length-1).toFixed(1)} ${sy(ymin)} L ${sx(0)} ${sy(ymin)} Z`;
+  // y gridlines
+  let glines="";
+  for(let g=0;g<=4;g++){const v=ymin+span*g/4;const y=sy(v);
+    glines+=`<line class="gridline" x1="${P.l}" y1="${y}" x2="${W-P.r}" y2="${y}"/>
+    <text class="tick" x="${P.l-8}" y="${y+4}" text-anchor="end">${Math.round(v)}</text>`;}
+  const zero=sy(0);
+  document.getElementById("equity").innerHTML=`
+  <svg viewBox="0 0 ${W} ${H}">
+    <defs><linearGradient id="eg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(227,185,78,.28)"/>
+      <stop offset="100%" stop-color="rgba(227,185,78,0)"/></linearGradient></defs>
+    ${glines}
+    <line class="axis" x1="${P.l}" y1="${zero}" x2="${W-P.r}" y2="${zero}" stroke-dasharray="3 4"/>
+    <path d="${area}" fill="url(#eg)"/>
+    <path class="eqline" d="${line}"/>
+    ${pts.map((p,i)=>i? `<circle class="dot" cx="${sx(i)}" cy="${sy(p.y)}" r="3"/>`:"").join("")}
+  </svg>`;
+})();
+
+/* ===== Daily bar chart ===== */
+(function(){
+  const byDay={};
+  TRADES.forEach(t=>{byDay[t.date]=(byDay[t.date]||0)+t.pips;});
+  const days=Object.keys(byDay).sort();
+  const W=520,H=240,P={l:42,r:12,t:16,b:42};
+  const vals=days.map(d=>byDay[d]); const vmax=Math.max(...vals,0),vmin=Math.min(...vals,0);
+  const span=(vmax-vmin)||1;
+  const bw=(W-P.l-P.r)/days.length;
+  const sy=v=>P.t+(1-(v-vmin)/span)*(H-P.t-P.b);
+  const zero=sy(0);
+  let bars="";
+  days.forEach((d,i)=>{
+    const v=byDay[d]; const x=P.l+i*bw+bw*0.18; const w=bw*0.64;
+    const y=v>=0?sy(v):zero; const h=Math.abs(sy(v)-zero);
+    const col=v>=0?"var(--green)":"var(--red)";
+    const lbl=d.slice(5).replace("-","/");
+    bars+=`<rect x="${x}" y="${y}" width="${w}" height="${Math.max(h,1)}" rx="4" fill="${col}" opacity=".85"/>
+      <text class="tick" x="${x+w/2}" y="${H-24}" text-anchor="middle">${lbl}</text>
+      <text x="${x+w/2}" y="${(v>=0?y-6:y+h+13)}" text-anchor="middle" font-size="11" font-weight="700" fill="${col}">${fmt(v)}</text>`;
+  });
+  document.getElementById("daily").innerHTML=`
+  <svg viewBox="0 0 ${W} ${H}">
+    <line class="axis" x1="${P.l}" y1="${zero}" x2="${W-P.r}" y2="${zero}"/>
+    ${bars}
+  </svg>`;
+})();
+
+/* ===== Outcome breakdown ===== */
+(function(){
+  const cats=[
+    {k:"TP3", lab:"Full winners (TP3)", col:"var(--gold)"},
+    {k:"TP1", lab:"Partial winners (TP1)", col:"var(--green)"},
+    {k:"SL",  lab:"Losses (SL)", col:"var(--red)"}
+  ];
+  const tot=TRADES.length;
+  document.getElementById("outcomes").innerHTML=cats.map(c=>{
+    const arr=TRADES.filter(t=>t.outcome===c.k);
+    const n=arr.length; const p=tot?Math.round(n/tot*100):0;
+    const pips=arr.reduce((s,t)=>s+t.pips,0);
+    return `<div class="ob">
+      <div class="row"><span>${c.lab}</span><b>${n} · ${fmt(pips)}p</b></div>
+      <div class="bar"><span style="width:${p}%;background:${c.col}"></span></div>
+    </div>`;
+  }).join("");
+})();
+
+/* ===== Source breakdown: limits vs markets ===== */
+(function(){
+  const defs=[
+    {k:"limit",  cls:"limit", ico:"🎯", title:"Limits", desc:"Published limit zones, filled passively"},
+    {k:"market", cls:"",      ico:"⚡", title:"Markets", desc:"Live sniper entries on reaction"}
+  ];
+  document.getElementById("sources").innerHTML = defs.map(d=>{
+    const arr=TRADES.filter(t=>(t.kind||"market")===d.k);
+    const n=arr.length;
+    const w=arr.filter(t=>t.pips>0).length;
+    const l=arr.filter(t=>t.pips<0).length;
+    const pips=arr.reduce((s,t)=>s+t.pips,0);
+    const wr=n?Math.round(w/n*100):0;
+    const npc=pips>=0?"pos":"neg";
+    return `<div class="src ${d.cls}">
+      <div class="shead">
+        <div class="ico">${d.ico}</div>
+        <div><div class="stitle">${d.title}</div><div class="sdesc">${d.desc}</div></div>
+      </div>
+      <div class="snet ${npc}">${fmt(pips)} pips</div>
+      <div class="srow"><span>Trades</span><b>${n}</b></div>
+      <div class="srow"><span>Win rate</span><b>${wr}%</b></div>
+      <div class="srow"><span>Winners / Losses</span><b>${w} / ${l}</b></div>
+      <div class="srow"><span>Net $ @ $0.1/pip</span><b>${pips>=0?"+":""}$${(pips*0.1).toFixed(0)}</b></div>
+    </div>`;
+  }).join("");
+})();
+
+/* ===== Position size calculator (pips -> $ by user lot) ===== */
+(function(){
+  // Base: 1 pip = $0.1 at 0.01 lot  ->  $ = pips * 10 * lot
+  const KEY="gl_lot";
+  const input=document.getElementById("lot");
+  const saved=parseFloat(localStorage.getItem(KEY));
+  if(saved>0) input.value=saved;
+  const usd=(pips,lot)=>pips*10*lot;
+  const limitPips=TRADES.filter(t=>(t.kind||"market")==="limit").reduce((s,t)=>s+t.pips,0);
+  const marketPips=TRADES.filter(t=>(t.kind||"market")==="market").reduce((s,t)=>s+t.pips,0);
+  function render(){
+    let lot=parseFloat(input.value); if(!(lot>0)) lot=0;
+    localStorage.setItem(KEY,lot);
+    document.getElementById("pipval").textContent=(10*lot).toFixed(2);
+    const items=[
+      {lab:"Net P&L",     pips:net,        feat:true},
+      {lab:"🎯 Limits",    pips:limitPips},
+      {lab:"⚡ Markets",   pips:marketPips},
+      {lab:"Best trade",  pips:best.pips}
+    ];
+    document.getElementById("calcout").innerHTML=items.map(it=>{
+      const d=usd(it.pips,lot); const cls=d>=0?"pos":"neg";
+      return `<div class="cstat ${it.feat?"feat":""}">
+        <div class="clab">${it.lab}</div>
+        <div class="cval ${cls}">${d>=0?"+":"-"}$${Math.abs(d).toFixed(2)}</div>
+        <div class="csub">${fmt(it.pips)} pips</div>
+      </div>`;
+    }).join("");
+  }
+  input.addEventListener("input",render);
+  render();
+})();
+
+/* ===== History table ===== */
+(function(){
+  const rows=[...TRADES].reverse().map(t=>{
+    const side=t.dir==="LONG"?'<span class="pill p-long">LONG</span>':'<span class="pill p-short">SHORT</span>';
+    const tg=t.outcome==="TP3"?'<span class="tag t-tp3">TP3 ✦</span>':
+             t.outcome==="TP1"?'<span class="tag t-tp1">TP1</span>':
+             '<span class="tag t-sl">SL</span>';
+    const pc=t.pips>=0?"pos":"neg";
+    const kind=(t.kind||"market");
+    const src=kind==="limit"
+      ? '<span class="tag t-tp3" style="font-size:10px">LIMIT</span>'
+      : '<span class="tag" style="font-size:10px;background:rgba(255,255,255,.05);color:var(--muted)">MARKET</span>';
+    return `<tr>
+      <td class="id">#${t.id}</td>
+      <td>${t.date.slice(5).replace("-","/")}</td>
+      <td>${side} ${src}</td>
+      <td class="num">${t.entry}</td>
+      <td>${tg}</td>
+      <td class="num pipv ${pc}">${fmt(t.pips)}</td>
+      <td class="num">${t.grade}/10</td>
+      <td class="hidem note">${t.note}</td>
+    </tr>`;
+  }).join("");
+  document.querySelector("#history tbody").innerHTML=rows;
+})();
+</script>
+</body>
+</html>
