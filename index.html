@@ -188,6 +188,10 @@
   .ach .aname{font-size:11.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--gold-soft)}
   .ach.locked .aname{color:var(--muted)}
   .ach .aval{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.4}
+  .ach.red{border-color:rgba(239,91,91,.45)}
+  .ach.red .coin{background:radial-gradient(circle at 35% 30%, #f0a3a3, #c24a4a 60%, #6e2222);
+    box-shadow:0 4px 14px rgba(0,0,0,.4), inset 0 -3px 6px rgba(0,0,0,.25), 0 0 18px rgba(239,91,91,.22)}
+  .ach.red .aname{color:var(--red)}
   .ach::after{content:"";position:absolute;top:0;left:-80%;width:55%;height:100%;transform:skewX(-20deg);
     background:linear-gradient(90deg,transparent,rgba(255,255,255,.075),transparent);
     animation:sheen 5s ease-in-out infinite;animation-delay:var(--sd,0s)}
@@ -606,6 +610,7 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
   const bestDayDate=Object.keys(byDay).find(d=>byDay[d]===bestDayVal);
   let maxStreak=0,cur=0;
   TRADES.forEach(t=>{ if(t.pips>0){cur++; if(cur>maxStreak)maxStreak=cur;} else cur=0; });
+  const worst = losses.length ? losses.reduce((a,t)=>t.pips<a.pips?t:a, losses[0]) : null;
   const pct=(a,b)=>Math.min(Math.round(a/b*100),100);
   const badges=[
     {ico:"🏆", name:"TP3 Master",  val:tp3+"× full TP3 winners — all 3 targets", ok:tp3>0},
@@ -615,10 +620,12 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
     {ico:"🎯", name:"Sniper",      val:"Win rate "+winRate+"%", ok:winRate>=70},
     {ico:"🛡️", name:"Risk Keeper", val:"Avg win +"+avgWin+"p vs avg loss −"+avgLoss+"p", ok:avgWin>avgLoss},
     {ico:"💰", name:"+1000 Club",  val:net>=1000?"Crossed +1000 pips net":"Progress: "+fmt(net)+" / +1000", ok:net>=1000, prog:net<1000?pct(net,1000):null},
-    {ico:"🦅", name:"+2000 Club",  val:net>=2000?"Crossed +2000 pips net":"Progress: "+fmt(net)+" / +2000", ok:net>=2000, prog:net<2000?pct(Math.max(net,0),2000):null}
+    {ico:"🦅", name:"+2000 Club",  val:net>=2000?"Crossed +2000 pips net":"Progress: "+fmt(net)+" / +2000", ok:net>=2000, prog:net<2000?pct(Math.max(net,0),2000):null},
+    {ico:"🛑", name:"Stop Losses", val:losses.length+" SL hit · −"+grossLoss+" pips total — part of the game", ok:true, cls:"red"},
+    {ico:"📉", name:"Worst Trade", val:(worst?fmt(worst.pips)+" pips · #"+worst.id+" "+worst.dir:"—")+" — we own it", ok:true, cls:"red"}
   ];
   document.getElementById("achievements").innerHTML = badges.map((b,i)=>`
-    <div class="ach ${b.ok?"":"locked"}" style="--sd:${(i*0.55).toFixed(2)}s">
+    <div class="ach ${b.ok?"":"locked"} ${b.cls||""}" style="--sd:${(i*0.55).toFixed(2)}s">
       <div class="coin">${b.ok?b.ico:"🔒"}</div>
       <div class="aname">${b.name}</div>
       <div class="aval">${b.val}</div>
