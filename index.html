@@ -175,6 +175,12 @@
   .rise{animation:rise .6s cubic-bezier(.21,.7,.25,1) both}
   @keyframes logoFloat{0%,100%{transform:translateY(0) rotateZ(0)}50%{transform:translateY(-4px) rotateZ(-3deg)}}
   .logo{animation:logoFloat 5s ease-in-out infinite}
+  .replay{margin-left:auto;background:linear-gradient(160deg,#2a2208,#16110a);color:var(--gold);
+    border:1px solid var(--gold-dim);border-radius:8px;font-size:11px;font-weight:700;padding:5px 12px;
+    cursor:pointer;letter-spacing:.5px;font-family:inherit;transition:.15s}
+  .replay:hover{box-shadow:0 0 14px rgba(227,185,78,.3);color:var(--gold-soft)}
+  .replay:disabled{opacity:.45;cursor:default;box-shadow:none}
+  #replayCounter{font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.3px;text-transform:none}
   #phoenix{
     position:fixed;left:0;top:0;z-index:3;font-size:34px;cursor:pointer;user-select:none;
     -webkit-user-select:none;touch-action:manipulation;will-change:transform;
@@ -239,7 +245,7 @@
   </div>
 
   <div class="card">
-    <h2>Equity Curve — cumulative pips</h2>
+    <h2>Equity Curve — cumulative pips <button id="replayBtn" class="replay">▶ REPLAY</button><span id="replayCounter"></span></h2>
     <div class="chartbox" id="equity"></div>
     <div class="legend"><span><i style="background:var(--gold)"></i>Cumulative result (pips)</span></div>
   </div>
@@ -326,7 +332,7 @@ document.getElementById("kpis").innerHTML = kpis.map(k=>`
   </div>`).join("");
 document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
 
-/* ===== Equity curve ===== */
+/* ===== Equity curve (+ Replay) ===== */
 (function(){
   const W=820,H=240,P={l:46,r:16,t:16,b:28};
   let cum=0; const pts=[{x:0,y:0}];
@@ -335,25 +341,59 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
   const span=(ymax-ymin)||1;
   const sx=i=>P.l+(i/(pts.length-1))*(W-P.l-P.r);
   const sy=v=>P.t+(1-(v-ymin)/span)*(H-P.t-P.b);
-  const line=pts.map((p,i)=>(i?"L":"M")+sx(i).toFixed(1)+" "+sy(p.y).toFixed(1)).join(" ");
-  const area=line+` L ${sx(pts.length-1).toFixed(1)} ${sy(ymin)} L ${sx(0)} ${sy(ymin)} Z`;
-  // y gridlines
+  const box=document.getElementById("equity");
+  // y gridlines (статичны)
   let glines="";
   for(let g=0;g<=4;g++){const v=ymin+span*g/4;const y=sy(v);
     glines+=`<line class="gridline" x1="${P.l}" y1="${y}" x2="${W-P.r}" y2="${y}"/>
     <text class="tick" x="${P.l-8}" y="${y+4}" text-anchor="end">${Math.round(v)}</text>`;}
   const zero=sy(0);
-  document.getElementById("equity").innerHTML=`
-  <svg viewBox="0 0 ${W} ${H}">
-    <defs><linearGradient id="eg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="rgba(227,185,78,.28)"/>
-      <stop offset="100%" stop-color="rgba(227,185,78,0)"/></linearGradient></defs>
-    ${glines}
-    <line class="axis" x1="${P.l}" y1="${zero}" x2="${W-P.r}" y2="${zero}" stroke-dasharray="3 4"/>
-    <path d="${area}" fill="url(#eg)"/>
-    <path class="eqline" d="${line}"/>
-    ${pts.map((p,i)=>i? `<circle class="dot" cx="${sx(i)}" cy="${sy(p.y)}" r="3"/>`:"").join("")}
-  </svg>`;
+  function render(upTo){
+    const sub=pts.slice(0,upTo+1);
+    const line=sub.map((p,i)=>(i?"L":"M")+sx(i).toFixed(1)+" "+sy(p.y).toFixed(1)).join(" ");
+    const area=line+` L ${sx(sub.length-1).toFixed(1)} ${sy(ymin)} L ${sx(0)} ${sy(ymin)} Z`;
+    box.innerHTML=`
+    <svg viewBox="0 0 ${W} ${H}">
+      <defs><linearGradient id="eg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="rgba(227,185,78,.28)"/>
+        <stop offset="100%" stop-color="rgba(227,185,78,0)"/></linearGradient></defs>
+      ${glines}
+      <line class="axis" x1="${P.l}" y1="${zero}" x2="${W-P.r}" y2="${zero}" stroke-dasharray="3 4"/>
+      <path d="${area}" fill="url(#eg)"/>
+      <path class="eqline" d="${line}"/>
+      ${sub.map((p,i)=>i? `<circle class="dot" cx="${sx(i)}" cy="${sy(p.y)}" r="${i===sub.length-1&&upTo<pts.length-1?5:3}"/>`:"").join("")}
+    </svg>`;
+  }
+  render(pts.length-1);
+
+  /* Replay: проигрываем путь сделка за сделкой */
+  const btn=document.getElementById("replayBtn");
+  const cnt=document.getElementById("replayCounter");
+  let timer=null;
+  btn.addEventListener("click",()=>{
+    if(timer){clearInterval(timer);timer=null;}
+    let i=0; btn.disabled=true; render(0);
+    cnt.textContent="…"; cnt.style.color="var(--muted)";
+    timer=setInterval(()=>{
+      i++;
+      render(i);
+      const t=TRADES[i-1], c=pts[i].y;
+      cnt.style.color = c>=0?"var(--green)":"var(--red)";
+      cnt.textContent=`#${t.id} · ${t.date.slice(5).replace("-","/")} · ${t.pips>0?"+":""}${t.pips}p → total ${c>0?"+":""}${c} pips`;
+      if(i>=pts.length-1){
+        clearInterval(timer); timer=null; btn.disabled=false;
+        cnt.style.color="var(--gold)";
+        cnt.textContent=`Final: ${c>0?"+":""}${c} pips 🏆`;
+        if(window.__glBurst){
+          const r=box.getBoundingClientRect();
+          let k=0; const ti=setInterval(()=>{
+            window.__glBurst(r.left+30+Math.random()*(r.width-60), r.top+20+Math.random()*(r.height*0.6));
+            if(++k>=7) clearInterval(ti);
+          },160);
+        }
+      }
+    },430);
+  });
 })();
 
 /* ===== Daily bar chart ===== */
@@ -547,6 +587,24 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
     });
   }
 
+  /* KPI count-up: цифры накручиваются как на бирже */
+  if(!reduced){
+    document.querySelectorAll(".kpi .val").forEach(el=>{
+      const m = el.textContent.match(/^([+\-]?)(\d+)(.*)$/s);
+      if(!m || m[3].startsWith(".")) return;   // дроби (profit factor) не трогаем
+      const sign=m[1], target=parseInt(m[2],10), suffix=m[3];
+      const t0=performance.now(), dur=1100;
+      (function tick(t){
+        const k=Math.min((t-t0)/dur,1);
+        const ease=1-Math.pow(1-k,3);
+        el.childNodes[0].nodeType===3
+          ? el.firstChild.textContent = sign+Math.round(target*ease)+suffix
+          : el.textContent = sign+Math.round(target*ease)+suffix;
+        if(k<1) requestAnimationFrame(tick);
+      })(t0);
+    });
+  }
+
   /* 3D tilt on hover (desktop only) */
   if(!reduced && !touch){
     const MAX = 7; // deg
@@ -606,6 +664,7 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
         });
       }
     }
+    window.__glBurst = burst;
 
     let last=0;
     (function loop(t){
