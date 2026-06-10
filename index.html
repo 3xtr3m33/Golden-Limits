@@ -152,6 +152,34 @@
   footer{text-align:center;color:var(--muted2);font-size:12px;margin-top:30px;line-height:1.7}
   footer b{color:var(--muted)}
 
+  /* ===== 3D motion FX ===== */
+  #fx{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .wrap{position:relative;z-index:1}
+  .kpis{perspective:1100px}
+  .grid2,.srcgrid{perspective:1300px}
+  .kpi,.card,.src{transform-style:preserve-3d;will-change:transform}
+  .kpi.tilt,.src.tilt{
+    transition:transform .12s ease-out, box-shadow .25s ease, border-color .25s ease;
+  }
+  .kpi.tilt:hover,.src.tilt:hover{
+    box-shadow:0 18px 40px rgba(0,0,0,.45), 0 0 22px rgba(227,185,78,.07);
+    border-color:var(--border2);
+  }
+  .kpi.tilt::after,.src.tilt::after{
+    content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
+    background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%), rgba(227,185,78,.10), transparent 55%);
+    transition:opacity .25s ease;
+  }
+  .kpi.tilt:hover::after,.src.tilt:hover::after{opacity:1}
+  @keyframes rise{from{opacity:0;transform:translateY(22px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+  .rise{animation:rise .6s cubic-bezier(.21,.7,.25,1) both}
+  @keyframes logoFloat{0%,100%{transform:translateY(0) rotateZ(0)}50%{transform:translateY(-4px) rotateZ(-3deg)}}
+  .logo{animation:logoFloat 5s ease-in-out infinite}
+  @media (prefers-reduced-motion: reduce){
+    .rise,.logo{animation:none}
+    .kpi.tilt,.src.tilt{transition:none}
+  }
+
   @media(max-width:860px){
     .kpis{grid-template-columns:repeat(2,1fr)}
     .grid2{grid-template-columns:1fr}
@@ -160,6 +188,7 @@
 </style>
 </head>
 <body>
+<canvas id="fx"></canvas>
 <div class="wrap">
 
   <header>
@@ -495,6 +524,81 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
     </tr>`;
   }).join("");
   document.querySelector("#history tbody").innerHTML=rows;
+})();
+
+/* ===== 3D motion FX: tilt + particles + entrance ===== */
+(function(){
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const touch = matchMedia("(hover: none)").matches;
+
+  /* Entrance: staggered rise for cards */
+  if(!reduced){
+    document.querySelectorAll(".kpi, .card, .src").forEach((el,i)=>{
+      el.classList.add("rise");
+      el.style.animationDelay = Math.min(i*60, 600)+"ms";
+    });
+  }
+
+  /* 3D tilt on hover (desktop only) */
+  if(!reduced && !touch){
+    const MAX = 7; // deg
+    document.querySelectorAll(".kpi, .src").forEach(el=>{
+      el.classList.add("tilt");
+      el.addEventListener("mousemove", e=>{
+        const r = el.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;   // 0..1
+        const py = (e.clientY - r.top) / r.height;
+        const rx = (0.5 - py) * MAX;
+        const ry = (px - 0.5) * MAX;
+        el.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateZ(6px)`;
+        el.style.setProperty("--mx", (px*100).toFixed(1)+"%");
+        el.style.setProperty("--my", (py*100).toFixed(1)+"%");
+      });
+      el.addEventListener("mouseleave", ()=>{ el.style.transform = ""; });
+    });
+  }
+
+  /* Floating gold particles */
+  if(!reduced){
+    const cv = document.getElementById("fx");
+    const ctx = cv.getContext("2d");
+    let W,H,parts=[];
+    const N = touch ? 26 : 54;
+    function resize(){
+      W = cv.width = innerWidth * devicePixelRatio;
+      H = cv.height = innerHeight * devicePixelRatio;
+      cv.style.width = innerWidth+"px"; cv.style.height = innerHeight+"px";
+    }
+    function spawn(){
+      parts = Array.from({length:N}, ()=>({
+        x: Math.random()*W, y: Math.random()*H,
+        r: (Math.random()*1.6+0.5) * devicePixelRatio,
+        vx:(Math.random()-.5)*.12*devicePixelRatio,
+        vy:(-Math.random()*.22-.05)*devicePixelRatio,
+        a: Math.random()*.45+.10,
+        tw: Math.random()*Math.PI*2,
+        ts: Math.random()*.015+.004
+      }));
+    }
+    resize(); spawn();
+    addEventListener("resize", ()=>{resize(); spawn();});
+    let last=0;
+    (function loop(t){
+      requestAnimationFrame(loop);
+      if(t-last < 33) return; last = t;   // ~30fps, лёгкий
+      ctx.clearRect(0,0,W,H);
+      for(const p of parts){
+        p.x += p.vx; p.y += p.vy; p.tw += p.ts;
+        if(p.y < -10){ p.y = H+10; p.x = Math.random()*W; }
+        if(p.x < -10) p.x = W+10; else if(p.x > W+10) p.x = -10;
+        const glow = p.a * (0.6 + 0.4*Math.sin(p.tw));
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, 6.283);
+        ctx.fillStyle = `rgba(227,185,78,${glow.toFixed(3)})`;
+        ctx.fill();
+      }
+    })(0);
+  }
 })();
 </script>
 </body>
