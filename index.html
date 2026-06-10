@@ -177,6 +177,13 @@
   .logo{animation:logoFloat 5s ease-in-out infinite}
   /* Achievements */
   .achgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .achgrid.collapsed .ach:nth-child(n+4){display:none}
+  #achToggle{cursor:pointer;user-select:none;-webkit-user-select:none}
+  #achToggle:hover{color:var(--txt)}
+  .achhint{margin-left:auto;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.4px;
+    border:1px solid var(--gold-dim);border-radius:999px;padding:3px 11px;background:rgba(227,185,78,.08);
+    transition:.15s;text-transform:none}
+  #achToggle:hover .achhint{box-shadow:0 0 12px rgba(227,185,78,.25)}
   @media(max-width:860px){.achgrid{grid-template-columns:repeat(2,1fr)}}
   .ach{position:relative;overflow:hidden;background:linear-gradient(160deg,var(--card2),var(--bg2));
     border:1px solid var(--gold-dim);border-radius:14px;padding:16px 12px;text-align:center}
@@ -291,8 +298,8 @@
   </div>
 
   <div class="card">
-    <h2>Achievements</h2>
-    <div class="achgrid" id="achievements"></div>
+    <h2 id="achToggle">Achievements <span class="achhint" id="achHint"></span></h2>
+    <div class="achgrid collapsed" id="achievements"></div>
   </div>
 
   <div class="card">
@@ -631,6 +638,17 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
       <div class="aval">${b.val}</div>
       ${b.prog!=null?`<div class="bar" style="height:6px;margin-top:9px"><span style="width:${b.prog}%;background:var(--gold-dim)"></span></div>`:""}
     </div>`).join("");
+
+  /* collapsed by default: top-3 visible, клик по заголовку открывает все */
+  const grid=document.getElementById("achievements");
+  const tgl=document.getElementById("achToggle");
+  const hint=document.getElementById("achHint");
+  function syncHint(){
+    hint.textContent = grid.classList.contains("collapsed")
+      ? "show all "+badges.length+" ▾" : "show less ▴";
+  }
+  syncHint();
+  tgl.addEventListener("click",()=>{ grid.classList.toggle("collapsed"); syncHint(); });
 })();
 
 /* ===== 3D motion FX: tilt + particles + entrance ===== */
