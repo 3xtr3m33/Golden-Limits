@@ -175,9 +175,17 @@
   .rise{animation:rise .6s cubic-bezier(.21,.7,.25,1) both}
   @keyframes logoFloat{0%,100%{transform:translateY(0) rotateZ(0)}50%{transform:translateY(-4px) rotateZ(-3deg)}}
   .logo{animation:logoFloat 5s ease-in-out infinite}
+  #phoenix{
+    position:fixed;left:0;top:0;z-index:3;font-size:34px;cursor:pointer;user-select:none;
+    -webkit-user-select:none;touch-action:manipulation;will-change:transform;
+    filter:drop-shadow(0 0 9px rgba(227,185,78,.75)) drop-shadow(0 0 22px rgba(227,185,78,.25));
+  }
+  #phoenix.poof{animation:phoof .55s ease}
+  @keyframes phoof{0%{scale:1;rotate:0deg}35%{scale:1.5;rotate:16deg}100%{scale:1;rotate:0deg}}
   @media (prefers-reduced-motion: reduce){
     .rise,.logo{animation:none}
     .kpi.tilt,.src.tilt{transition:none}
+    #phoenix{display:none}
   }
 
   @media(max-width:860px){
@@ -582,6 +590,23 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
     }
     resize(); spawn();
     addEventListener("resize", ()=>{resize(); spawn();});
+
+    /* golden dust bursts (phoenix) */
+    let dust=[];
+    function burst(cx,cy){
+      const dpr=devicePixelRatio;
+      for(let i=0;i<52;i++){
+        const a=Math.random()*6.283, v=(Math.random()*2.6+0.5)*dpr;
+        dust.push({
+          x:cx*dpr, y:cy*dpr,
+          vx:Math.cos(a)*v, vy:Math.sin(a)*v - 0.5*dpr,
+          r:(Math.random()*1.9+0.6)*dpr,
+          life:1, decay:Math.random()*0.012+0.008,
+          tw:Math.random()*6.283
+        });
+      }
+    }
+
     let last=0;
     (function loop(t){
       requestAnimationFrame(loop);
@@ -597,7 +622,47 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
         ctx.fillStyle = `rgba(227,185,78,${glow.toFixed(3)})`;
         ctx.fill();
       }
+      if(dust.length){
+        for(const p of dust){
+          p.x += p.vx; p.y += p.vy;
+          p.vx *= .985; p.vy = p.vy*.985 + .02*devicePixelRatio;
+          p.life -= p.decay; p.tw += .25;
+          const a = Math.max(p.life,0) * (0.65 + 0.35*Math.sin(p.tw));
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r*(0.5+p.life*0.5), 0, 6.283);
+          ctx.fillStyle = `rgba(240,208,137,${a.toFixed(3)})`;
+          ctx.fill();
+        }
+        dust = dust.filter(p=>p.life>0);
+      }
     })(0);
+
+    /* ===== Golden Phoenix 🐦‍🔥 ===== */
+    const ph=document.createElement("div");
+    ph.id="phoenix"; ph.textContent="🐦‍🔥";
+    document.body.appendChild(ph);
+    let px=innerWidth*0.75, py=innerHeight*0.25, tx=0, ty=0, spd=1;
+    function newTarget(){
+      tx = 30 + Math.random()*(innerWidth-90);
+      ty = 30 + Math.random()*(innerHeight*0.72);
+      spd = 0.6 + Math.random()*1.5;
+    }
+    newTarget();
+    let bob=0;
+    (function fly(){
+      requestAnimationFrame(fly);
+      const dx=tx-px, dy=ty-py, d=Math.hypot(dx,dy)||1;
+      if(d<28) newTarget();
+      px += dx/d*spd; py += dy/d*spd; bob += 0.06;
+      const flip = dx>=0 ? -1 : 1;   // эмодзи смотрит влево по умолчанию
+      ph.style.transform=`translate(${px.toFixed(1)}px,${(py+Math.sin(bob)*7).toFixed(1)}px) scaleX(${flip})`;
+    })();
+    ph.addEventListener("pointerdown", e=>{
+      e.preventDefault();
+      burst(px+17, py+Math.sin(bob)*7+17);
+      ph.classList.remove("poof"); void ph.offsetWidth; ph.classList.add("poof");
+      spd = 3.2; newTarget();   // вспугнули — улетает быстрее
+    });
   }
 })();
 </script>
