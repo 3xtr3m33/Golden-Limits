@@ -32,6 +32,7 @@ window.GL_DATA = {
     { id:32, date:"2026-06-11", dir:"LONG",  entry:4085.5, pips:205,  outcome:"TP2", grade:7, kind:"market", note:"Zone-reaction long off 15m bull OB after overnight V-reversal. TP1+TP2 banked, runner closed on published trail 4101. TP3 missed by 80p." },
     { id:33, date:"2026-06-11", dir:"SHORT", entry:4101.5, pips:-110, outcome:"SL",  grade:7, kind:"market", note:"Reject at supply zone, second test. Stop swept on third push into the zone. Lesson coded: no instant reversals without 15m confirmation." },
     { id:34, date:"2026-06-11", dir:"LONG",  entry:4086,   pips:-65,  outcome:"SL",  grade:6.5, kind:"market", note:"Second test of the morning demand zone. Procedurally clean entry, but the zone was spent — third push broke it. Last sub-7 trade: channel bar raised to 7+." },
-    { id:35, date:"2026-06-11", dir:"LONG",  entry:4089.5, pips:-70,  outcome:"SL",  grade:7, kind:"market", note:"Sweep-reclaim long off equal lows. Ran +66p and missed TP1 by 1.5p, then sell-side pressure broke the floor ahead of ECB. Market cancelled the setup." }
+    { id:35, date:"2026-06-11", dir:"LONG",  entry:4089.5, pips:-70,  outcome:"SL",  grade:7, kind:"market", note:"Sweep-reclaim long off equal lows. Ran +66p and missed TP1 by 1.5p, then sell-side pressure broke the floor ahead of ECB. Market cancelled the setup." },
+    { id:36, date:"2026-06-11", dir:"LONG",  entry:4060,   pips:180,  outcome:"TP1", grade:7, kind:"limit",  note:"Published limit at the day's key demand 4052-4060, filled on the PPI spike. First retest of the major origin: TP1 banked, runner peaked +330p near TP2 then closed at breakeven." }
   ]
 };
