@@ -464,6 +464,7 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
 (function(){
   const cats=[
     {k:"TP3", lab:"Full winners (TP3)", col:"var(--gold)"},
+    {k:"TP2", lab:"Partial winners (TP2)", col:"var(--green)"},
     {k:"TP1", lab:"Partial winners (TP1)", col:"var(--green)"},
     {k:"SL",  lab:"Losses (SL)", col:"var(--red)"}
   ];
@@ -589,6 +590,7 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
   const rows=[...TRADES].reverse().map(t=>{
     const side=t.dir==="LONG"?'<span class="pill p-long">LONG</span>':'<span class="pill p-short">SHORT</span>';
     const tg=t.outcome==="TP3"?'<span class="tag t-tp3">TP3 ✦</span>':
+             t.outcome==="TP2"?'<span class="tag t-tp1">TP2</span>':
              t.outcome==="TP1"?'<span class="tag t-tp1">TP1</span>':
              '<span class="tag t-sl">SL</span>';
     const pc=t.pips>=0?"pos":"neg";
