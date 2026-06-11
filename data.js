@@ -10,8 +10,8 @@
    Cancelled/expired signals -> update activity counters (no P&L).
 ============================================================ */
 window.GL_DATA = {
-  last_updated: "2026-06-10",
-  activity: { cancelled: 13, pending: 2 },
+  last_updated: "2026-06-11",
+  activity: { cancelled: 15, pending: 0 },
   trades: [
     { id:4,  date:"2026-06-01", dir:"SHORT", entry:4479,   pips:70,   outcome:"TP1", grade:7, kind:"market", note:"First profit. TP1 hit, BE not moved (management lesson)." },
     { id:5,  date:"2026-06-02", dir:"LONG",  entry:4525.6, pips:94,   outcome:"TP1", grade:7, kind:"market", note:"Sweep-reclaim L1, runner back to BE." },
@@ -28,6 +28,8 @@ window.GL_DATA = {
     { id:26, date:"2026-06-09", dir:"SHORT", entry:4284,   pips:340,  outcome:"TP3", grade:7, kind:"market", note:"Trend-continuation sell-the-bounce reject at broken structure in ~1000p down-day. Full TP3 winner." },
     { id:27, date:"2026-06-09", dir:"SHORT", entry:4264,   pips:80,   outcome:"TP1", grade:7, kind:"market", note:"Trend-continuation sell-the-bounce reject at 4267-4278 sell-zone. TP1 banked, runner back to BE." },
     { id:30, date:"2026-06-10", dir:"SHORT", entry:4168,   pips:-60,  outcome:"SL",  grade:7, kind:"market", note:"Trend retest-short 4172.5. Stop sat 1.5p above retest high, swept by wick before TP1. CPI-day whipsaw." },
-    { id:31, date:"2026-06-10", dir:"SHORT", entry:4161,   pips:-50,  outcome:"SL",  grade:8, kind:"market", note:"Break+retest of 4163-4179 consolidation. Range reclaimed, false break swept stop. News-whipsaw before CPI." }
+    { id:31, date:"2026-06-10", dir:"SHORT", entry:4161,   pips:-50,  outcome:"SL",  grade:8, kind:"market", note:"Break+retest of 4163-4179 consolidation. Range reclaimed, false break swept stop. News-whipsaw before CPI." },
+    { id:32, date:"2026-06-11", dir:"LONG",  entry:4085.5, pips:205,  outcome:"TP2", grade:7, kind:"market", note:"Zone-reaction long off 15m bull OB after overnight V-reversal. TP1+TP2 banked, runner closed on published trail 4101. TP3 missed by 80p." },
+    { id:33, date:"2026-06-11", dir:"SHORT", entry:4101.5, pips:-110, outcome:"SL",  grade:7, kind:"market", note:"Reject at supply zone, second test. Stop swept on third push into the zone. Lesson coded: no instant reversals without 15m confirmation." }
   ]
 };
