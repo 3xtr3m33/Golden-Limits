@@ -11,7 +11,7 @@
 ============================================================ */
 window.GL_DATA = {
   last_updated: "2026-06-11",
-  activity: { cancelled: 15, pending: 2 },
+  activity: { cancelled: 16, pending: 1 },
   trades: [
     { id:4,  date:"2026-06-01", dir:"SHORT", entry:4479,   pips:70,   outcome:"TP1", grade:7, kind:"market", note:"First profit. TP1 hit, BE not moved (management lesson)." },
     { id:5,  date:"2026-06-02", dir:"LONG",  entry:4525.6, pips:94,   outcome:"TP1", grade:7, kind:"market", note:"Sweep-reclaim L1, runner back to BE." },
@@ -32,6 +32,7 @@ window.GL_DATA = {
     { id:32, date:"2026-06-11", dir:"LONG",  entry:4085.5, pips:205,  outcome:"TP2", grade:7, kind:"market", note:"Zone-reaction long off 15m bull OB after overnight V-reversal. TP1+TP2 banked, runner closed on published trail 4101. TP3 missed by 80p." },
     { id:34, date:"2026-06-11", dir:"LONG",  entry:4086,   pips:-65,  outcome:"SL",  grade:6.5, kind:"market", note:"Second test of the morning demand zone. Procedurally clean entry, but the zone was spent — third push broke it. Last sub-7 trade: channel bar raised to 7+." },
     { id:35, date:"2026-06-11", dir:"LONG",  entry:4089.5, pips:-70,  outcome:"SL",  grade:7, kind:"market", note:"Sweep-reclaim long off equal lows. Ran +66p and missed TP1 by 1.5p, then sell-side pressure broke the floor ahead of ECB. Market cancelled the setup." },
-    { id:36, date:"2026-06-11", dir:"LONG",  entry:4060,   pips:180,  outcome:"TP1", grade:7, kind:"limit",  note:"Published limit at the day's key demand 4052-4060, filled on the PPI spike. First retest of the major origin: TP1 banked, runner peaked +330p near TP2 then closed at breakeven." }
+    { id:36, date:"2026-06-11", dir:"LONG",  entry:4060,   pips:180,  outcome:"TP1", grade:7, kind:"limit",  note:"Published limit at the day's key demand 4052-4060, filled on the PPI spike. First retest of the major origin: TP1 banked, runner peaked +330p near TP2 then closed at breakeven." },
+    { id:37, date:"2026-06-11", dir:"LONG",  entry:4095,   pips:-45,  outcome:"SL",  grade:7.5, kind:"market", note:"Evening break+retest above 4093. The breakout turned out to be a stop sweep and price fell back into the range. Tight stop kept the damage small." }
   ]
 };
