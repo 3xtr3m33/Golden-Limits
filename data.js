@@ -35,6 +35,7 @@ window.GL_DATA = {
     { id:36, date:"2026-06-11", dir:"LONG",  entry:4060,   pips:180,  outcome:"TP1", grade:7, kind:"limit",  note:"Published limit at the day's key demand 4052-4060, filled on the PPI spike. First retest of the major origin: TP1 banked, runner peaked +330p near TP2 then closed at breakeven." },
     { id:37, date:"2026-06-11", dir:"LONG",  entry:4095,   pips:-45,  outcome:"SL",  grade:7.5, kind:"market", note:"Evening break+retest above 4093. The breakout turned out to be a stop sweep and price fell back into the range. Tight stop kept the damage small." },
     { id:41, date:"2026-06-12", dir:"LONG",  entry:4177,   pips:80,   outcome:"TP1", grade:8.5, kind:"market", note:"London swept the equal lows 4171 into the 15m OB and reclaimed — entry on the first reject close. TP1 banked, runner back to BE." },
-    { id:42, date:"2026-06-12", dir:"LONG",  entry:4217,   pips:90,   outcome:"TP1", grade:8, kind:"market", note:"Trend retest after the 4205 structure break: pullback into the flip zone, reclaim confirmed. TP1 banked, runner held through hours of chop at the highs then closed at BE." }
+    { id:42, date:"2026-06-12", dir:"LONG",  entry:4217,   pips:90,   outcome:"TP1", grade:8, kind:"market", note:"Trend retest after the 4205 structure break: pullback into the flip zone, reclaim confirmed. TP1 banked, runner held through hours of chop at the highs then closed at BE." },
+    { id:43, date:"2026-06-12", dir:"LONG",  entry:4208,   pips:60,   outcome:"TP1", grade:7.5, kind:"market", note:"Sweep reclaim off the 4194-4200 floor: stops swept under the round number, buyers absorbed and reclaimed in one impulse bar. TP1 banked in 10 minutes, runner back to BE on the pullback." }
   ]
 };
