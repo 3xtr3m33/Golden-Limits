@@ -10,8 +10,8 @@
    Cancelled/expired signals -> update activity counters (no P&L).
 ============================================================ */
 window.GL_DATA = {
-  last_updated: "2026-06-12",
-  activity: { cancelled: 19, pending: 0 },
+  last_updated: "2026-06-15",
+  activity: { cancelled: 19, pending: 1 },
   trades: [
     { id:4,  date:"2026-06-01", dir:"SHORT", entry:4479,   pips:70,   outcome:"TP1", grade:7, kind:"market", note:"First profit. TP1 hit, BE not moved (management lesson)." },
     { id:5,  date:"2026-06-02", dir:"LONG",  entry:4525.6, pips:94,   outcome:"TP1", grade:7, kind:"market", note:"Sweep-reclaim L1, runner back to BE." },
@@ -37,6 +37,9 @@ window.GL_DATA = {
     { id:41, date:"2026-06-12", dir:"LONG",  entry:4177,   pips:80,   outcome:"TP1", grade:8.5, kind:"market", note:"London swept the equal lows 4171 into the 15m OB and reclaimed — entry on the first reject close. TP1 banked, runner back to BE." },
     { id:42, date:"2026-06-12", dir:"LONG",  entry:4217,   pips:90,   outcome:"TP1", grade:8, kind:"market", note:"Trend retest after the 4205 structure break: pullback into the flip zone, reclaim confirmed. TP1 banked, runner held through hours of chop at the highs then closed at BE." },
     { id:43, date:"2026-06-12", dir:"LONG",  entry:4208,   pips:60,   outcome:"TP1", grade:7.5, kind:"market", note:"Sweep reclaim off the 4194-4200 floor: stops swept under the round number, buyers absorbed and reclaimed in one impulse bar. TP1 banked in 10 minutes, runner back to BE on the pullback." },
-    { id:44, date:"2026-06-12", dir:"LONG",  entry:4201.5, pips:-50,  outcome:"SL",  grade:7.5, kind:"market", note:"Second sweep-reclaim attempt at a tired floor after eight defenses with fading bounces. The reclaim candle faded after entry and sellers pushed through. Lesson logged: enter on fully closed bars only, skip exhausted zones." }
+    { id:44, date:"2026-06-12", dir:"LONG",  entry:4201.5, pips:-50,  outcome:"SL",  grade:7.5, kind:"market", note:"Second sweep-reclaim attempt at a tired floor after eight defenses with fading bounces. The reclaim candle faded after entry and sellers pushed through. Lesson logged: enter on fully closed bars only, skip exhausted zones." },
+    { id:45, date:"2026-06-15", dir:"LONG",  entry:4344,   pips:-100, outcome:"SL",  grade:7, kind:"market", note:"Breakout long above 4344. Entered at the top of the move into multi-TF supply instead of on a pullback — it failed and rolled over. Wrong-place entry." },
+    { id:46, date:"2026-06-15", dir:"LONG",  entry:4364,   pips:-140, outcome:"SL",  grade:7, kind:"market", note:"Reclaim of the week high at the very top of the coil. Again chased the end of the move, not a retest into support. Day's biggest loss." },
+    { id:47, date:"2026-06-15", dir:"LONG",  entry:4324,   pips:-60,  outcome:"SL",  grade:7.5, kind:"limit", note:"Published limit at the 4324 swing-low — a proper retest into support, not a top. Held over 3h in a dead overnight coil 4318-4328 that gave two fake reclaims and no momentum, then lost the floor into SL. Right idea, wrong timing after two earlier stops." }
   ]
 };
