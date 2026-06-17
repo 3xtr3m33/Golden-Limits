@@ -10,8 +10,8 @@
    Cancelled/expired signals -> update activity counters (no P&L).
 ============================================================ */
 window.GL_DATA = {
-  last_updated: "2026-06-15",
-  activity: { cancelled: 19, pending: 1 },
+  last_updated: "2026-06-17",
+  activity: { cancelled: 21, pending: 3 },
   trades: [
     { id:4,  date:"2026-06-01", dir:"SHORT", entry:4479,   pips:70,   outcome:"TP1", grade:7, kind:"market", note:"First profit. TP1 hit, BE not moved (management lesson)." },
     { id:5,  date:"2026-06-02", dir:"LONG",  entry:4525.6, pips:94,   outcome:"TP1", grade:7, kind:"market", note:"Sweep-reclaim L1, runner back to BE." },
@@ -40,6 +40,7 @@ window.GL_DATA = {
     { id:44, date:"2026-06-12", dir:"LONG",  entry:4201.5, pips:-50,  outcome:"SL",  grade:7.5, kind:"market", note:"Second sweep-reclaim attempt at a tired floor after eight defenses with fading bounces. The reclaim candle faded after entry and sellers pushed through. Lesson logged: enter on fully closed bars only, skip exhausted zones." },
     { id:45, date:"2026-06-15", dir:"LONG",  entry:4344,   pips:-100, outcome:"SL",  grade:7, kind:"market", note:"Breakout long above 4344. Entered at the top of the move into multi-TF supply instead of on a pullback — it failed and rolled over. Wrong-place entry." },
     { id:46, date:"2026-06-15", dir:"LONG",  entry:4364,   pips:-140, outcome:"SL",  grade:7, kind:"market", note:"Reclaim of the week high at the very top of the coil. Again chased the end of the move, not a retest into support. Day's biggest loss." },
-    { id:47, date:"2026-06-15", dir:"LONG",  entry:4324,   pips:-60,  outcome:"SL",  grade:7.5, kind:"limit", note:"Published limit at the 4324 swing-low — a proper retest into support, not a top. Held over 3h in a dead overnight coil 4318-4328 that gave two fake reclaims and no momentum, then lost the floor into SL. Right idea, wrong timing after two earlier stops." }
+    { id:47, date:"2026-06-15", dir:"LONG",  entry:4324,   pips:-60,  outcome:"SL",  grade:7.5, kind:"limit", note:"Published limit at the 4324 swing-low — a proper retest into support, not a top. Held over 3h in a dead overnight coil 4318-4328 that gave two fake reclaims and no momentum, then lost the floor into SL. Right idea, wrong timing after two earlier stops." },
+    { id:48, date:"2026-06-17", dir:"LONG",  entry:4319,   pips:140,  outcome:"TP2", grade:7.5, kind:"market", note:"Asia-low liquidity sweep + reclaim — a clean retest into support, not a chase. Price swept the session low 4317.7, reclaimed, and the entry fired on the close. TP1 and TP2 banked, stop locked in profit, runner still riding toward TP3. Patient FOMC-day scalp." }
   ]
 };
