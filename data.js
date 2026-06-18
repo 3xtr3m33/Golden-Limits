@@ -10,8 +10,8 @@
    Cancelled/expired signals -> update activity counters (no P&L).
 ============================================================ */
 window.GL_DATA = {
-  last_updated: "2026-06-17",
-  activity: { cancelled: 21, pending: 3 },
+  last_updated: "2026-06-18",
+  activity: { cancelled: 24, pending: 0 },
   trades: [
     { id:4,  date:"2026-06-01", dir:"SHORT", entry:4479,   pips:70,   outcome:"TP1", grade:7, kind:"market", note:"First profit. TP1 hit, BE not moved (management lesson)." },
     { id:5,  date:"2026-06-02", dir:"LONG",  entry:4525.6, pips:94,   outcome:"TP1", grade:7, kind:"market", note:"Sweep-reclaim L1, runner back to BE." },
@@ -43,6 +43,9 @@ window.GL_DATA = {
     { id:47, date:"2026-06-15", dir:"LONG",  entry:4324,   pips:-60,  outcome:"SL",  grade:7.5, kind:"limit", note:"Published limit at the 4324 swing-low — a proper retest into support, not a top. Held over 3h in a dead overnight coil 4318-4328 that gave two fake reclaims and no momentum, then lost the floor into SL. Right idea, wrong timing after two earlier stops." },
     { id:48, date:"2026-06-17", dir:"LONG",  entry:4319,   pips:140,  outcome:"TP2", grade:7.5, kind:"market", note:"Asia-low liquidity sweep + reclaim — a clean retest into support, not a chase. Price swept the session low 4317.7, reclaimed, and the entry fired on the close. TP1 and TP2 banked, stop locked in profit, runner still riding toward TP3. Patient FOMC-day scalp." },
     { id:49, date:"2026-06-17", dir:"SHORT", entry:4341,   pips:-15,  outcome:"SL",  grade:7,   kind:"market", note:"Counter-trend fade of fresh 15m supply at the range top with a closed 3m rejection. The stop sat inside the zone and a wick to the very top swept it before any follow-through. Small loss — stop too tight, the zone actually held on the close." },
-    { id:50, date:"2026-06-17", dir:"SHORT", entry:4355,   pips:-70,  outcome:"SL",  grade:6,   kind:"limit",  note:"Published premium-supply limit at the range top. Filled as price pushed up, then the same impulse broke clean through into the weekly high and stopped it out. The zone was not fresh and the breakout ran it over." }
+    { id:50, date:"2026-06-17", dir:"SHORT", entry:4355,   pips:-70,  outcome:"SL",  grade:6,   kind:"limit",  note:"Published premium-supply limit at the range top. Filled as price pushed up, then the same impulse broke clean through into the weekly high and stopped it out. The zone was not fresh and the breakout ran it over." },
+    { id:51, date:"2026-06-18", dir:"LONG",  entry:4276,   pips:-110, outcome:"SL",  grade:7,   kind:"limit",  note:"Published discount-demand limit at the Asia low + 15m bull OB after the sell-side sweep. Filled on the London cascade, but the broken 4296 floor turned into a vertical flush straight through the zone and the stop. Set-and-forget stop protected capital as designed." },
+    { id:52, date:"2026-06-18", dir:"SHORT", entry:4249,   pips:90,   outcome:"TP1", grade:7,   kind:"market", note:"By-trend continuation in the post-FOMC downtrend. Sold the retest of the broken 4250 shelf on a closed 3m rejection — a clean reaction, not a chase. TP1 banked, runner spiked back to breakeven. Winner." },
+    { id:53, date:"2026-06-18", dir:"SHORT", entry:4270,   pips:320,  outcome:"TP3", grade:7,   kind:"market", note:"Post-news bounce swept the range-high liquidity into the 15m bear FVG 4273-82 and printed a closed 3m rejection — a clean bull-trap short. All three targets hit as price rolled back toward the FOMC crash low. Trade of the day, full TP3 winner." }
   ]
 };
