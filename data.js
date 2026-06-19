@@ -10,7 +10,7 @@
    Cancelled/expired signals -> update activity counters (no P&L).
 ============================================================ */
 window.GL_DATA = {
-  last_updated: "2026-06-18",
+  last_updated: "2026-06-19",
   activity: { cancelled: 24, pending: 0 },
   trades: [
     { id:4,  date:"2026-06-01", dir:"SHORT", entry:4479,   pips:70,   outcome:"TP1", grade:7, kind:"market", note:"First profit. TP1 hit, BE not moved (management lesson)." },
@@ -47,6 +47,7 @@ window.GL_DATA = {
     { id:51, date:"2026-06-18", dir:"LONG",  entry:4276,   pips:-110, outcome:"SL",  grade:7,   kind:"limit",  note:"Published discount-demand limit at the Asia low + 15m bull OB after the sell-side sweep. Filled on the London cascade, but the broken 4296 floor turned into a vertical flush straight through the zone and the stop. Set-and-forget stop protected capital as designed." },
     { id:52, date:"2026-06-18", dir:"SHORT", entry:4249,   pips:90,   outcome:"TP1", grade:7,   kind:"market", note:"By-trend continuation in the post-FOMC downtrend. Sold the retest of the broken 4250 shelf on a closed 3m rejection — a clean reaction, not a chase. TP1 banked, runner spiked back to breakeven. Winner." },
     { id:53, date:"2026-06-18", dir:"SHORT", entry:4270,   pips:320,  outcome:"TP3", grade:7,   kind:"market", note:"Post-news bounce swept the range-high liquidity into the 15m bear FVG 4273-82 and printed a closed 3m rejection — a clean bull-trap short. All three targets hit as price rolled back toward the FOMC crash low. Trade of the day, full TP3 winner." },
-    { id:54, date:"2026-06-18", dir:"LONG",  entry:4221,   pips:90,   outcome:"TP1", grade:7.5, kind:"market", note:"Counter-trend long off the FOMC crash low 4219 — swept the major sell-side liquidity and reclaimed on a closed 3m bar. Nearly stopped on a deep retest, held by a whisker above the tight structural stop, then bounced to TP1. Runner could not break TP2 in the downtrend and trailed out at breakeven. TP1 banked. Weakest setup of the day — thin counter-trend R, saved by the structural stop and closed-bar discipline." }
+    { id:54, date:"2026-06-18", dir:"LONG",  entry:4221,   pips:90,   outcome:"TP1", grade:7.5, kind:"market", note:"Counter-trend long off the FOMC crash low 4219 — swept the major sell-side liquidity and reclaimed on a closed 3m bar. Nearly stopped on a deep retest, held by a whisker above the tight structural stop, then bounced to TP1. Runner could not break TP2 in the downtrend and trailed out at breakeven. TP1 banked. Weakest setup of the day — thin counter-trend R, saved by the structural stop and closed-bar discipline." },
+    { id:55, date:"2026-06-19", dir:"SHORT", entry:4177,   pips:300,  outcome:"TP3", grade:7,   kind:"market", note:"By-trend turtle-soup at the 4166-76 OB on thin Juneteenth liquidity — swept the buy-side above 4176 and closed back below, entry on the sealed reject. All three targets hit on a clean set-and-forget run toward the daily draw. Waited out two hours of holiday chop and correctly declined a marginal earlier reject. Full TP3 winner." }
   ]
 };
