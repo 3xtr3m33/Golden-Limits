@@ -3,24 +3,25 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#0b0d12" />
+<meta name="theme-color" content="#07090e" />
 <meta name="color-scheme" content="dark" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>Golden Limits — Performance</title>
 <style>
-  html{background:#0b0d12;color-scheme:dark}
+  html{background:#07090e;color-scheme:dark}
   :root{
-    --bg:#0b0d12; --bg2:#0f1218; --card:#151a24; --card2:#1b2230;
-    --border:#262d3d; --border2:#313a4e;
+    --bg:#07090e; --bg2:#0b0e15; --card:#121722; --card2:#172030;
+    --border:#222a3a; --border2:#2e3850;
     --gold:#e3b94e; --gold-soft:#f0d089; --gold-dim:#8a7333;
+    --blue:#2f86ff; --blue-soft:#7ab4ff; --blue-dim:#1d4f8f;
     --green:#27c281; --green-dim:#16996b; --red:#ef5b5b;
     --txt:#e8eaf0; --muted:#8b93a7; --muted2:#5e6678;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg) radial-gradient(1200px 600px at 50% -10%, #161b26 0%, var(--bg) 55%) no-repeat;
+    background:var(--bg) radial-gradient(1200px 600px at 50% -10%, #11203a 0%, var(--bg) 55%) no-repeat;
     color:var(--txt); min-height:100vh; -webkit-font-smoothing:antialiased;
     padding:calc(32px + env(safe-area-inset-top)) 20px calc(60px + env(safe-area-inset-bottom));
   }
@@ -28,15 +29,20 @@
 
   /* Header */
   header{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:28px}
-  .brand{display:flex;align-items:center;gap:14px}
+  .brand{display:flex;flex-direction:row;align-items:center;gap:18px}
+  .btxt{display:flex;flex-direction:column;gap:3px}
   .logo{
-    width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:24px;
-    background:linear-gradient(145deg,#2a2208,#16110a);border:1px solid var(--gold-dim);
-    box-shadow:0 0 24px rgba(227,185,78,.18);
+    width:135px;height:135px;flex:0 0 135px;border-radius:50%;overflow:hidden;
+    background:#000 url("assets/logo.png") no-repeat center center;background-size:cover;
+    box-shadow:0 0 24px rgba(227,185,78,.20), 0 0 30px rgba(47,134,255,.22);
   }
-  .brand h1{font-size:22px;font-weight:700;letter-spacing:.3px}
+  .brand h1{font-size:34px;font-weight:800;letter-spacing:.3px}
+  .slogan{font-size:15px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#fff}
+  .slogan span{color:var(--gold)}
   .brand h1 span{color:var(--gold)}
   .brand p{font-size:12.5px;color:var(--muted);margin-top:2px;letter-spacing:.4px}
+  .tagline{font-size:10px;font-weight:700;letter-spacing:2.4px;margin-top:7px;
+    color:var(--blue-soft);text-transform:uppercase;text-shadow:0 0 14px rgba(47,134,255,.35)}
   .hmeta{text-align:right;font-size:12px;color:var(--muted)}
   .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;
     background:rgba(227,185,78,.10);color:var(--gold-soft);border:1px solid var(--gold-dim);letter-spacing:.5px}
@@ -155,6 +161,15 @@
   .period-out .pmeta .prange{color:var(--muted2);font-size:11.5px}
   @media(max-width:860px){ .period-out .pmeta{margin-left:0;width:100%;text-align:left} }
 
+  /* Net P&L card — bull background */
+  .pnlbg{position:relative;overflow:hidden;min-height:230px}
+  .pnlbg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:url("assets/bull3.png") no-repeat center 30%;background-size:cover;opacity:.6}
+  .pnlbg::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:linear-gradient(90deg, var(--card) 2%, rgba(18,23,34,.82) 32%, rgba(18,23,34,.45) 72%, rgba(18,23,34,.35) 100%)}
+  .pnlbg > *{position:relative;z-index:1}
+  .pnlbg .period-out{text-shadow:0 1px 8px rgba(0,0,0,.9)}
+
   footer{text-align:center;color:var(--muted2);font-size:12px;margin-top:30px;line-height:1.7}
   footer b{color:var(--muted)}
 
@@ -244,10 +259,12 @@
 
   <header>
     <div class="brand">
-      <div class="logo">🏆</div>
-      <div>
+      <div class="logo"></div>
+      <div class="btxt">
         <h1>Golden <span>Limits</span></h1>
+        <div class="slogan">Trading is <span>simple</span></div>
         <p>Performance Dashboard · Gold (XAUUSD)</p>
+        <div class="tagline">Plan · Execute · Manage · Repeat</div>
       </div>
     </div>
     <div class="hmeta">
@@ -258,7 +275,7 @@
 
   <div class="kpis" id="kpis"></div>
 
-  <div class="card">
+  <div class="card pnlbg">
     <h2>Net P&amp;L — by period</h2>
     <div class="seg" id="periodSeg">
       <button data-p="day">Day</button>
@@ -727,6 +744,7 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
         vx:(Math.random()-.5)*.12*devicePixelRatio,
         vy:(-Math.random()*.22-.05)*devicePixelRatio,
         a: Math.random()*.45+.10,
+        col: Math.random()<0.42 ? '47,134,255' : '227,185,78',
         tw: Math.random()*Math.PI*2,
         ts: Math.random()*.015+.004
       }));
@@ -763,7 +781,7 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
         const glow = p.a * (0.6 + 0.4*Math.sin(p.tw));
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, 6.283);
-        ctx.fillStyle = `rgba(227,185,78,${glow.toFixed(3)})`;
+        ctx.fillStyle = `rgba(${p.col},${glow.toFixed(3)})`;
         ctx.fill();
       }
       if(dust.length){
@@ -781,32 +799,7 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
       }
     })(0);
 
-    /* ===== Golden Phoenix 🐦‍🔥 ===== */
-    const ph=document.createElement("div");
-    ph.id="phoenix"; ph.textContent="🐦‍🔥";
-    document.body.appendChild(ph);
-    let px=innerWidth*0.75, py=innerHeight*0.25, tx=0, ty=0, spd=1;
-    function newTarget(){
-      tx = 30 + Math.random()*(innerWidth-90);
-      ty = 30 + Math.random()*(innerHeight*0.72);
-      spd = 0.6 + Math.random()*1.5;
-    }
-    newTarget();
-    let bob=0;
-    (function fly(){
-      requestAnimationFrame(fly);
-      const dx=tx-px, dy=ty-py, d=Math.hypot(dx,dy)||1;
-      if(d<28) newTarget();
-      px += dx/d*spd; py += dy/d*spd; bob += 0.06;
-      const flip = dx>=0 ? -1 : 1;   // эмодзи смотрит влево по умолчанию
-      ph.style.transform=`translate(${px.toFixed(1)}px,${(py+Math.sin(bob)*7).toFixed(1)}px) scaleX(${flip})`;
-    })();
-    ph.addEventListener("pointerdown", e=>{
-      e.preventDefault();
-      burst(px+17, py+Math.sin(bob)*7+17);
-      ph.classList.remove("poof"); void ph.offsetWidth; ph.classList.add("poof");
-      spd = 3.2; newTarget();   // вспугнули — улетает быстрее
-    });
+    /* phoenix removed (per user request) */
   }
 })();
 </script>
