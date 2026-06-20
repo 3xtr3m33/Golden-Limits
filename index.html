@@ -169,10 +169,8 @@
     background:linear-gradient(90deg, var(--card) 2%, rgba(18,23,34,.82) 32%, rgba(18,23,34,.45) 72%, rgba(18,23,34,.35) 100%)}
   .pnlbg > *{position:relative;z-index:1}
   .pnlbg .period-out{text-shadow:0 1px 8px rgba(0,0,0,.9)}
-  @media(max-width:860px){
-    .pnlbg{min-height:300px}
-    .pnlbg::before{background-position:center 40%;opacity:.72}
-  }
+  .pnlbg .seg{background:rgba(10,13,20,.18);border-color:rgba(255,255,255,.07)}
+  .pnlbg .seg button{text-shadow:0 1px 6px rgba(0,0,0,.85)}
 
   /* Trade history pager */
   .pager{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px;justify-content:center}
