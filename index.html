@@ -314,11 +314,6 @@
     <div class="legend"><span><i style="background:var(--gold)"></i>Cumulative result (pips)</span></div>
   </div>
 
-  <div class="card">
-    <h2>Risk &amp; Consistency — how smooth is the curve?</h2>
-    <div class="kpis" id="risk"></div>
-  </div>
-
   <div class="grid2">
     <div class="card">
       <h2>Daily Performance</h2>
@@ -474,38 +469,6 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
       }
     },430);
   });
-})();
-
-/* ===== Risk & consistency metrics ===== */
-(function(){
-  if(!TRADES.length) return;
-  // walk equity in chronological order, track peak + drawdown
-  let cum=0, peak=0, maxDD=0;
-  TRADES.forEach(t=>{ cum+=t.pips; if(cum>peak)peak=cum; const dd=peak-cum; if(dd>maxDD)maxDD=dd; });
-  const curDD = peak - cum;                       // 0 when sitting at all-time high
-  // longest losing streak
-  let lossStreak=0, run=0;
-  TRADES.forEach(t=>{ if(t.pips<0){run++; if(run>lossStreak)lossStreak=run;} else run=0; });
-  const expect = Math.round(net/TRADES.length);   // per-trade edge (pips)
-  const recF = maxDD ? (net/maxDD) : net;         // net / max drawdown
-  const $ = p => (p>=0?"+":"-")+"$"+Math.abs(p*0.1).toFixed(0);
-  const cards=[
-    { lab:"Max Drawdown", val:"-"+maxDD+" pips", cls:"neg",
-      sub:$(-maxDD)+" · now "+(curDD===0?"0 · at all-time high":("-"+curDD+"p below peak")), feature:true },
-    { lab:"Expectancy", val:(expect>=0?"+":"")+expect+" pips", cls:expect>=0?"pos":"neg",
-      sub:"average edge per trade" },
-    { lab:"Longest Loss Streak", val:lossStreak,
-      sub:"consecutive SL in a row" },
-    { lab:"Recovery Factor", val:recF.toFixed(1)+"×", cls:recF>=1?"pos":"neg",
-      sub:"net ÷ max drawdown" }
-  ];
-  document.getElementById("risk").innerHTML = cards.map(k=>`
-    <div class="kpi ${k.feature?"feature":""}">
-      <div class="ring"></div>
-      <div class="lab">${k.lab}</div>
-      <div class="val ${k.cls||""}">${k.val}</div>
-      <div class="sub">${k.sub}</div>
-    </div>`).join("");
 })();
 
 /* ===== Daily bar chart ===== */
