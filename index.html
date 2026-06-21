@@ -433,10 +433,25 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
     glines+=`<line class="gridline" x1="${P.l}" y1="${y}" x2="${W-P.r}" y2="${y}"/>
     <text class="tick" x="${P.l-8}" y="${y+4}" text-anchor="end">${Math.round(v)}</text>`;}
   const zero=sy(0);
-  function render(upTo){
-    const sub=pts.slice(0,upTo+1);
-    const line=sub.map((p,i)=>(i?"L":"M")+sx(i).toFixed(1)+" "+sy(p.y).toFixed(1)).join(" ");
-    const area=line+` L ${sx(sub.length-1).toFixed(1)} ${sy(ymin)} L ${sx(0)} ${sy(ymin)} Z`;
+  // render at fractional progress (0 .. pts.length-1) — head glides between points
+  function render(prog){
+    if(prog<0)prog=0; const lastI=pts.length-1; if(prog>lastI)prog=lastI;
+    const full=Math.floor(prog), frac=prog-full;
+    let d="M"+sx(0).toFixed(1)+" "+sy(pts[0].y).toFixed(1);
+    let dots="";
+    for(let i=1;i<=full;i++){
+      d+=" L"+sx(i).toFixed(1)+" "+sy(pts[i].y).toFixed(1);
+      dots+=`<circle class="dot" cx="${sx(i).toFixed(1)}" cy="${sy(pts[i].y).toFixed(1)}" r="3"/>`;
+    }
+    let hx=sx(full), hy=sy(pts[full].y);
+    if(frac>0 && full<lastI){
+      const bx=sx(full+1), by=sy(pts[full+1].y);
+      hx=hx+(bx-hx)*frac; hy=hy+(by-hy)*frac;
+      d+=" L"+hx.toFixed(1)+" "+hy.toFixed(1);
+    }
+    const animating=prog<lastI;
+    if(animating) dots+=`<circle class="dot" cx="${hx.toFixed(1)}" cy="${hy.toFixed(1)}" r="5"/>`;
+    const area=d+` L ${hx.toFixed(1)} ${sy(ymin).toFixed(1)} L ${sx(0).toFixed(1)} ${sy(ymin).toFixed(1)} Z`;
     box.innerHTML=`
     <svg viewBox="0 0 ${W} ${H}">
       <defs><linearGradient id="eg" x1="0" y1="0" x2="0" y2="1">
@@ -445,39 +460,54 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
       ${glines}
       <line class="axis" x1="${P.l}" y1="${zero}" x2="${W-P.r}" y2="${zero}" stroke-dasharray="3 4"/>
       <path d="${area}" fill="url(#eg)"/>
-      <path class="eqline" d="${line}"/>
-      ${sub.map((p,i)=>i? `<circle class="dot" cx="${sx(i)}" cy="${sy(p.y)}" r="${i===sub.length-1&&upTo<pts.length-1?5:3}"/>`:"").join("")}
+      <path class="eqline" d="${d}"/>
+      ${dots}
     </svg>`;
   }
   render(pts.length-1);
 
-  /* Replay: проигрываем путь сделка за сделкой */
+  /* Replay: плавно скользим по кривой (requestAnimationFrame) */
   const btn=document.getElementById("replayBtn");
   const cnt=document.getElementById("replayCounter");
-  let timer=null;
+  const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const PER=260;                  // ms per trade segment
+  let raf=null, dustTimer=null;
+  function stopAnim(){ if(raf){cancelAnimationFrame(raf);raf=null;} if(dustTimer){clearInterval(dustTimer);dustTimer=null;} }
   btn.addEventListener("click",()=>{
-    if(timer){clearInterval(timer);timer=null;}
-    let i=0; btn.disabled=true; render(0);
+    stopAnim();
+    const N=pts.length-1;         // segments to draw
+    btn.disabled=true; render(0);
     cnt.textContent="…"; cnt.style.color="var(--muted)";
-    timer=setInterval(()=>{
-      i++;
-      render(i);
-      const t=TRADES[i-1], c=pts[i].y;
-      cnt.style.color = c>=0?"var(--green)":"var(--red)";
-      cnt.textContent=`#${t.id} · ${t.date.slice(5).replace("-","/")} · ${t.pips>0?"+":""}${t.pips}p → total ${c>0?"+":""}${c} pips`;
-      if(i>=pts.length-1){
-        clearInterval(timer); timer=null; btn.disabled=false;
-        cnt.style.color="var(--gold)";
-        cnt.textContent=`Final: ${c>0?"+":""}${c} pips 🏆`;
-        if(window.__glBurst){
-          const r=box.getBoundingClientRect();
-          let k=0; const ti=setInterval(()=>{
-            window.__glBurst(r.left+30+Math.random()*(r.width-60), r.top+20+Math.random()*(r.height*0.6));
-            if(++k>=7) clearInterval(ti);
-          },160);
-        }
+    if(reduced){ render(N); finish(); return; }   // respect reduced-motion: jump to end
+    let start=null, shown=-1;
+    function finish(){
+      btn.disabled=false;
+      const c=pts[N].y;
+      cnt.style.color="var(--gold)";
+      cnt.textContent=`Final: ${c>0?"+":""}${c} pips 🏆`;
+      if(window.__glBurst){
+        const r=box.getBoundingClientRect();
+        let k=0; dustTimer=setInterval(()=>{
+          window.__glBurst(r.left+30+Math.random()*(r.width-60), r.top+20+Math.random()*(r.height*0.6));
+          if(++k>=7){clearInterval(dustTimer);dustTimer=null;}
+        },160);
       }
-    },430);
+    }
+    function frame(ts){
+      if(start===null) start=ts;
+      const prog=Math.min((ts-start)/PER, N);
+      render(prog);
+      const reached=Math.floor(prog+1e-6);
+      if(reached>=1 && reached!==shown && reached<=N){
+        shown=reached;
+        const t=TRADES[reached-1], c=pts[reached].y;
+        cnt.style.color=c>=0?"var(--green)":"var(--red)";
+        cnt.textContent=`#${t.id} · ${t.date.slice(5).replace("-","/")} · ${t.pips>0?"+":""}${t.pips}p → total ${c>0?"+":""}${c} pips`;
+      }
+      if(prog<N){ raf=requestAnimationFrame(frame); }
+      else { raf=null; finish(); }
+    }
+    raf=requestAnimationFrame(frame);
   });
 })();
 
