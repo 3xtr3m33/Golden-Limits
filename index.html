@@ -326,6 +326,11 @@
   </div>
 
   <div class="card">
+    <h2>Win Rate by Grade — does the score predict the outcome?</h2>
+    <div id="grades"></div>
+  </div>
+
+  <div class="card">
     <h2>Limits vs Markets — source breakdown</h2>
     <div class="srcgrid" id="sources"></div>
   </div>
@@ -510,6 +515,33 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
     return `<div class="ob">
       <div class="row"><span>${c.lab}</span><b>${n} · ${fmt(pips)}p</b></div>
       <div class="bar"><span style="width:${p}%;background:${c.col}"></span></div>
+    </div>`;
+  }).join("");
+})();
+
+/* ===== Win rate by grade band ===== */
+(function(){
+  const bands=[
+    {lab:"Sub-7",  sub:"6.0–6.9", min:0,   max:6.99, col:"var(--red)"},
+    {lab:"7.0",    sub:"7.0–7.4", min:7,   max:7.49, col:"var(--gold-dim)"},
+    {lab:"7.5",    sub:"7.5–7.9", min:7.5, max:7.99, col:"var(--gold)"},
+    {lab:"8.0+",   sub:"8.0 and up", min:8, max:99,  col:"var(--green)"}
+  ];
+  document.getElementById("grades").innerHTML = bands.map(b=>{
+    const arr=TRADES.filter(t=>t.grade>=b.min&&t.grade<=b.max);
+    const n=arr.length;
+    if(!n) return "";
+    const w=arr.filter(t=>t.pips>0).length;
+    const wr=Math.round(w/n*100);
+    const pips=arr.reduce((s,t)=>s+t.pips,0);
+    const avg=Math.round(pips/n);
+    const pc=pips>=0?"pos":"neg";
+    return `<div class="ob">
+      <div class="row">
+        <span><b>Grade ${b.lab}</b> <span class="note" style="font-size:11.5px">(${b.sub})</span> · ${n} trade${n>1?"s":""}</span>
+        <b>${wr}% win · <span class="${pc}">${fmt(pips)}p</span> · ${fmt(avg)}p/trade</b>
+      </div>
+      <div class="bar"><span style="width:${wr}%;background:${b.col}"></span></div>
     </div>`;
   }).join("");
 })();
