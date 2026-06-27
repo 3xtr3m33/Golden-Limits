@@ -34,7 +34,7 @@
   .logo{
     width:135px;height:135px;flex:0 0 135px;border-radius:50%;overflow:hidden;
     background:#000 url("assets/logo.png") no-repeat center center;background-size:cover;
-    box-shadow:0 0 24px rgba(227,185,78,.20), 0 0 30px rgba(47,134,255,.22);
+    box-shadow:0 0 26px rgba(227,185,78,.24), inset 0 0 0 1px rgba(227,185,78,.18);
   }
   .brand h1{font-size:34px;font-weight:800;letter-spacing:.3px}
   .slogan{font-size:15px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#fff}
@@ -42,7 +42,7 @@
   .brand h1 span{color:var(--gold)}
   .brand p{font-size:12.5px;color:var(--muted);margin-top:2px;letter-spacing:.4px}
   .tagline{font-size:10px;font-weight:700;letter-spacing:2.4px;margin-top:7px;
-    color:var(--blue-soft);text-transform:uppercase;text-shadow:0 0 14px rgba(47,134,255,.35)}
+    color:var(--gold-dim);text-transform:uppercase}
   .hmeta{text-align:right;font-size:12px;color:var(--muted)}
   .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;
     background:rgba(227,185,78,.10);color:var(--gold-soft);border:1px solid var(--gold-dim);letter-spacing:.5px}
@@ -55,8 +55,13 @@
   .kpi .lab{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
   .kpi .val{font-size:30px;font-weight:750;line-height:1;letter-spacing:.5px}
   .kpi .sub{font-size:12px;color:var(--muted);margin-top:7px}
-  .kpi.feature{background:linear-gradient(160deg,#1d2233,#14171f);border-color:var(--gold-dim)}
-  .kpi.feature .val{color:var(--gold)}
+  .kpi.feature{background:linear-gradient(160deg,#1f2434,#14171f);border-color:var(--gold);
+    box-shadow:0 0 0 1px rgba(227,185,78,.15), 0 10px 30px rgba(0,0,0,.35)}
+  .kpi.feature::after{content:"";position:absolute;left:0;top:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--gold-soft),var(--gold) 55%,transparent)}
+  .kpi.feature .lab{color:var(--gold-soft)}
+  .kpi.feature .val{color:var(--gold);font-size:38px;font-weight:800;
+    text-shadow:0 0 22px rgba(227,185,78,.22)}
   .pos{color:var(--green)} .neg{color:var(--red)}
   .ring{position:absolute;right:-26px;top:-26px;width:90px;height:90px;border-radius:50%;
     background:radial-gradient(circle,rgba(227,185,78,.12),transparent 70%)}
@@ -168,7 +173,7 @@
   /* Net P&L card — bull background */
   .pnlbg{position:relative;overflow:hidden;min-height:230px}
   .pnlbg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-    background:url("assets/bull3.png") no-repeat center 30%;background-size:cover;opacity:.6}
+    background:url("assets/bull3.png") no-repeat center 30%;background-size:cover;opacity:.4}
   .pnlbg::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
     background:linear-gradient(90deg, var(--card) 2%, rgba(18,23,34,.82) 32%, rgba(18,23,34,.45) 72%, rgba(18,23,34,.35) 100%)}
   .pnlbg > *{position:relative;z-index:1}
@@ -877,7 +882,7 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
     const cv = document.getElementById("fx");
     const ctx = cv.getContext("2d");
     let W,H,parts=[];
-    const N = touch ? 26 : 54;
+    const N = touch ? 16 : 32;
     function resize(){
       W = cv.width = innerWidth * devicePixelRatio;
       H = cv.height = innerHeight * devicePixelRatio;
@@ -889,8 +894,8 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
         r: (Math.random()*1.6+0.5) * devicePixelRatio,
         vx:(Math.random()-.5)*.12*devicePixelRatio,
         vy:(-Math.random()*.22-.05)*devicePixelRatio,
-        a: Math.random()*.45+.10,
-        col: Math.random()<0.42 ? '47,134,255' : '227,185,78',
+        a: Math.random()*.30+.05,
+        col: Math.random()<0.12 ? '240,208,137' : '227,185,78',
         tw: Math.random()*Math.PI*2,
         ts: Math.random()*.015+.004
       }));
