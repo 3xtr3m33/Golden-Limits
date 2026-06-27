@@ -361,7 +361,6 @@
           <th class="sortable" data-k="result">Result<span class="arr"></span></th>
           <th class="sortable num" data-k="pips">Pips<span class="arr"></span></th>
           <th class="sortable num" data-k="grade">Grade<span class="arr"></span></th>
-          <th class="hidem">Note</th>
         </tr></thead>
         <tbody></tbody>
       </table>
@@ -732,7 +731,6 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
       <td>${tg}</td>
       <td class="num pipv ${pc}">${fmt(t.pips)}</td>
       <td class="num">${t.grade}/10</td>
-      <td class="hidem note">${t.note}</td>
     </tr>`;
   };
   let data=[], pages=1, cur=1;
