@@ -170,18 +170,13 @@
   .period-out .pmeta .prange{color:var(--muted2);font-size:11.5px}
   @media(max-width:860px){ .period-out .pmeta{margin-left:0;width:100%;text-align:left} }
 
-  /* Net P&L card — live bull video background */
+  /* Net P&L card — bull background */
   .pnlbg{position:relative;overflow:hidden;min-height:230px}
   .pnlbg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
     background:url("assets/bull3.png") no-repeat center 30%;background-size:cover;opacity:.4}
-  .pnlvid{position:absolute;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;
-    object-fit:cover;object-position:center 30%;opacity:0;transition:opacity 1.2s ease;
-    filter:saturate(1.15) contrast(1.05)}
-  .pnlvid.on{opacity:.5}
   .pnlbg::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
     background:linear-gradient(90deg, var(--card) 2%, rgba(18,23,34,.82) 32%, rgba(18,23,34,.45) 72%, rgba(18,23,34,.35) 100%)}
   .pnlbg > *{position:relative;z-index:1}
-  .pnlbg video{z-index:0}
   .pnlbg .period-out{text-shadow:0 1px 8px rgba(0,0,0,.9)}
   .pnlbg .seg{background:rgba(10,13,20,.18);border-color:rgba(255,255,255,.07)}
   .pnlbg .seg button{text-shadow:0 1px 6px rgba(0,0,0,.85)}
@@ -300,7 +295,6 @@
     #phoenix{display:none}
     .brand h1 span{animation:none;-webkit-text-fill-color:var(--gold)}
     .tape .lane{animation:none}
-    .pnlvid{display:none}
     .sr{opacity:1;transform:none;transition:none}
   }
 
@@ -336,8 +330,6 @@
   <div class="kpis" id="kpis"></div>
 
   <div class="card pnlbg">
-    <video class="pnlvid" id="bullvid" muted loop playsinline autoplay preload="metadata"
-      src="assets/bull.mp4"></video>
     <h2>Net P&amp;L — by period</h2>
     <div class="seg" id="periodSeg">
       <button data-p="day">Day</button>
@@ -834,23 +826,6 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
   }
   syncHint();
   tgl.addEventListener("click",()=>{ grid.classList.toggle("collapsed"); syncHint(); });
-})();
-
-/* ===== Bull video: fade in when it actually plays ===== */
-(function(){
-  const v=document.getElementById("bullvid");
-  if(!v) return;
-  const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(reduced){ v.remove(); return; }
-  const on=()=>v.classList.add("on");
-  v.addEventListener("playing", on, {once:true});
-  const p=v.play(); if(p&&p.catch) p.catch(()=>{ /* autoplay blocked -> static bull3.png stays */ });
-  /* battery saver: pause when card is off-screen */
-  if("IntersectionObserver" in window){
-    new IntersectionObserver(es=>es.forEach(e=>{
-      if(e.isIntersecting){ const q=v.play(); if(q&&q.catch)q.catch(()=>{}); } else v.pause();
-    }),{threshold:.05}).observe(v);
-  }
 })();
 
 /* ===== Trade ticker tape (live from data) ===== */
