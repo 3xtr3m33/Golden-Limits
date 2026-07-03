@@ -170,13 +170,18 @@
   .period-out .pmeta .prange{color:var(--muted2);font-size:11.5px}
   @media(max-width:860px){ .period-out .pmeta{margin-left:0;width:100%;text-align:left} }
 
-  /* Net P&L card — bull background */
+  /* Net P&L card — live bull video background */
   .pnlbg{position:relative;overflow:hidden;min-height:230px}
   .pnlbg::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
     background:url("assets/bull3.png") no-repeat center 30%;background-size:cover;opacity:.4}
+  .pnlvid{position:absolute;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;
+    object-fit:cover;object-position:center 30%;opacity:0;transition:opacity 1.2s ease;
+    filter:saturate(1.15) contrast(1.05)}
+  .pnlvid.on{opacity:.5}
   .pnlbg::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
     background:linear-gradient(90deg, var(--card) 2%, rgba(18,23,34,.82) 32%, rgba(18,23,34,.45) 72%, rgba(18,23,34,.35) 100%)}
   .pnlbg > *{position:relative;z-index:1}
+  .pnlbg video{z-index:0}
   .pnlbg .period-out{text-shadow:0 1px 8px rgba(0,0,0,.9)}
   .pnlbg .seg{background:rgba(10,13,20,.18);border-color:rgba(255,255,255,.07)}
   .pnlbg .seg button{text-shadow:0 1px 6px rgba(0,0,0,.85)}
@@ -259,10 +264,44 @@
   }
   #phoenix.poof{animation:phoof .55s ease}
   @keyframes phoof{0%{scale:1;rotate:0deg}35%{scale:1.5;rotate:16deg}100%{scale:1;rotate:0deg}}
+  /* ===== Shimmer gold title ===== */
+  .brand h1 span{
+    background:linear-gradient(110deg,var(--gold-dim) 0%,var(--gold) 28%,#fff2c9 50%,var(--gold) 72%,var(--gold-dim) 100%);
+    background-size:220% 100%;-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:var(--gold);
+    animation:shimmer 4.5s linear infinite}
+  @keyframes shimmer{0%{background-position:120% 0}100%{background-position:-120% 0}}
+
+  /* ===== Trade ticker tape ===== */
+  .tape{position:relative;overflow:hidden;margin:-8px 0 22px;padding:9px 0;
+    border-top:1px solid rgba(227,185,78,.14);border-bottom:1px solid rgba(227,185,78,.14);
+    background:linear-gradient(90deg,rgba(227,185,78,.045),rgba(227,185,78,.012) 30%,rgba(227,185,78,.012) 70%,rgba(227,185,78,.045));
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+  .tape .lane{display:flex;width:max-content;gap:34px;animation:tape 46s linear infinite;will-change:transform}
+  .tape:hover .lane{animation-play-state:paused}
+  @keyframes tape{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .tk{display:flex;align-items:center;gap:8px;font-size:12.5px;white-space:nowrap;
+    color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.3px}
+  .tk .sym{color:var(--gold-soft);font-weight:800;letter-spacing:.6px}
+  .tk .dirL{color:var(--green);font-weight:700}
+  .tk .dirS{color:var(--red);font-weight:700}
+  .tk .pips{font-weight:800}
+  .tk .dot{width:4px;height:4px;border-radius:50%;background:var(--gold-dim);flex:0 0 4px}
+
+  /* ===== Scroll reveal ===== */
+  .sr{opacity:0;transform:translateY(26px) scale(.985);
+    transition:opacity .7s cubic-bezier(.21,.7,.25,1), transform .7s cubic-bezier(.21,.7,.25,1)}
+  .sr.in{opacity:1;transform:none}
+
   @media (prefers-reduced-motion: reduce){
     .rise,.logo{animation:none}
     .kpi.tilt,.src.tilt,.ach.tilt{transition:none}
     #phoenix{display:none}
+    .brand h1 span{animation:none;-webkit-text-fill-color:var(--gold)}
+    .tape .lane{animation:none}
+    .pnlvid{display:none}
+    .sr{opacity:1;transform:none;transition:none}
   }
 
   @media(max-width:860px){
@@ -292,9 +331,13 @@
     </div>
   </header>
 
+  <div class="tape" id="tape" aria-hidden="true"></div>
+
   <div class="kpis" id="kpis"></div>
 
   <div class="card pnlbg">
+    <video class="pnlvid" id="bullvid" muted loop playsinline autoplay preload="metadata"
+      src="assets/bull.mp4"></video>
     <h2>Net P&amp;L — by period</h2>
     <div class="seg" id="periodSeg">
       <button data-p="day">Day</button>
@@ -793,17 +836,64 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
   tgl.addEventListener("click",()=>{ grid.classList.toggle("collapsed"); syncHint(); });
 })();
 
+/* ===== Bull video: fade in when it actually plays ===== */
+(function(){
+  const v=document.getElementById("bullvid");
+  if(!v) return;
+  const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduced){ v.remove(); return; }
+  const on=()=>v.classList.add("on");
+  v.addEventListener("playing", on, {once:true});
+  const p=v.play(); if(p&&p.catch) p.catch(()=>{ /* autoplay blocked -> static bull3.png stays */ });
+  /* battery saver: pause when card is off-screen */
+  if("IntersectionObserver" in window){
+    new IntersectionObserver(es=>es.forEach(e=>{
+      if(e.isIntersecting){ const q=v.play(); if(q&&q.catch)q.catch(()=>{}); } else v.pause();
+    }),{threshold:.05}).observe(v);
+  }
+})();
+
+/* ===== Trade ticker tape (live from data) ===== */
+(function(){
+  const el=document.getElementById("tape");
+  if(!el || !TRADES.length){ if(el) el.remove(); return; }
+  const last=[...TRADES].slice(-14).reverse();
+  const item=t=>{
+    const dir=t.dir==="LONG"?'<span class="dirL">▲ LONG</span>':'<span class="dirS">▼ SHORT</span>';
+    const pc=t.pips>=0?"var(--green)":"var(--red)";
+    return `<span class="tk"><span class="dot"></span><span class="sym">XAUUSD</span> ${dir}
+      <span>${t.entry}</span><span class="pips" style="color:${pc}">${fmt(t.pips)}p</span>
+      <span style="color:var(--muted2)">${t.date.slice(5).replace("-","/")}</span></span>`;
+  };
+  const summary=`<span class="tk"><span class="dot"></span><span class="sym">GOLDEN LIMITS</span>
+    <span class="pips" style="color:${net>=0?"var(--green)":"var(--red)"}">${fmt(net)} pips net</span>
+    <span style="color:var(--muted2)">· ${winRate}% win rate · ${TRADES.length} trades</span></span>`;
+  const half=summary+last.map(item).join("");
+  el.innerHTML=`<div class="lane">${half}${half}</div>`;
+})();
+
 /* ===== 3D motion FX: tilt + particles + entrance ===== */
 (function(){
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const touch = matchMedia("(hover: none)").matches;
 
-  /* Entrance: staggered rise for cards */
+  /* Entrance: staggered rise for above-the-fold, scroll-reveal for the rest */
   if(!reduced){
-    document.querySelectorAll(".kpi, .card, .src").forEach((el,i)=>{
-      el.classList.add("rise");
-      el.style.animationDelay = Math.min(i*60, 600)+"ms";
+    const vh = innerHeight || 800;
+    const below = [];
+    document.querySelectorAll(".kpi, .card, .src, .ach").forEach((el,i)=>{
+      const r = el.getBoundingClientRect();
+      if(r.top < vh*0.92){
+        el.classList.add("rise");
+        el.style.animationDelay = Math.min(i*60, 600)+"ms";
+      } else below.push(el);
     });
+    if(below.length && "IntersectionObserver" in window){
+      const io = new IntersectionObserver(es=>es.forEach(e=>{
+        if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+      }),{threshold:.12});
+      below.forEach((el,i)=>{ el.classList.add("sr"); el.style.transitionDelay=(i%4)*70+"ms"; io.observe(el); });
+    }
   }
 
   /* KPI count-up: цифры накручиваются как на бирже */
