@@ -11,7 +11,7 @@
 ============================================================ */
 window.GL_DATA = {
   last_updated: "2026-07-06",
-  activity: { cancelled: 27, pending: 0 },
+  activity: { cancelled: 27, pending: 1 },
   trades: [
     { id:4,  date:"2026-06-01", dir:"SHORT", entry:4479,   pips:70,   outcome:"TP1", grade:7, kind:"market", note:"First profit. TP1 hit, BE not moved (management lesson)." },
     { id:5,  date:"2026-06-02", dir:"LONG",  entry:4525.6, pips:94,   outcome:"TP1", grade:7, kind:"market", note:"Sweep-reclaim L1, runner back to BE." },
