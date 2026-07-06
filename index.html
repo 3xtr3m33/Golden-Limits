@@ -663,15 +663,20 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
   const anchor=TRADES.reduce((m,t)=>t.date>m?t.date:m, TRADES[0].date);
   const earliest=TRADES.reduce((m,t)=>t.date<m?t.date:m, TRADES[0].date);
   const aD=parse(anchor);
+  // calendar periods anchored to the most recent trade date:
+  // week starts Monday, month starts on the 1st (month-to-date, not rolling 30 days)
+  const dow=(aD.getDay()+6)%7; // Mon=0 .. Sun=6
+  const weekStart=new Date(aD.getTime()-dow*dayMs);
+  const monthStart=new Date(aD.getFullYear(),aD.getMonth(),1);
   const windows={
-    day:   {lab:"Today",        from:aD},
-    week:  {lab:"Last 7 days",  from:new Date(aD.getTime()-6*dayMs)},
-    month: {lab:"Last 30 days", from:new Date(aD.getTime()-29*dayMs)},
-    all:   {lab:"All time",     from:null}
+    day:   {lab:"Today",      from:aD},
+    week:  {lab:"This week",  from:weekStart},
+    month: {lab:"This month", from:monthStart},
+    all:   {lab:"All time",   from:null}
   };
   const seg=document.getElementById("periodSeg");
   const out=document.getElementById("periodOut");
-  const iso=d=>d.toISOString().slice(0,10);
+  const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
   function render(p){
     const w=windows[p];
     const arr=(p==="all")?TRADES:TRADES.filter(t=>{const d=parse(t.date);return d>=w.from&&d<=aD;});
