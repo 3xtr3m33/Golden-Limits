@@ -10,8 +10,8 @@
    Cancelled/expired signals -> update activity counters (no P&L).
 ============================================================ */
 window.GL_DATA = {
-  last_updated: "2026-07-07",
-  activity: { cancelled: 28, pending: 0 },
+  last_updated: "2026-07-10",
+  activity: { cancelled: 29, pending: 0 },
   trades: [
     { id:4,  date:"2026-06-01", dir:"SHORT", entry:4479,   pips:70,   outcome:"TP1", grade:7, kind:"market", note:"First profit. TP1 hit, BE not moved (management lesson)." },
     { id:5,  date:"2026-06-02", dir:"LONG",  entry:4525.6, pips:94,   outcome:"TP1", grade:7, kind:"market", note:"Sweep-reclaim L1, runner back to BE." },
@@ -65,6 +65,7 @@ window.GL_DATA = {
     { id:71, date:"2026-07-07", dir:"SHORT", entry:4132,   pips:80,   outcome:"TP1", grade:7,   kind:"market", note:"By-trend impulse reject off the 4131.5-41 supply after two sluggish taps were correctly skipped — the trigger bar closed 38p through the edge. Price then ran the zone 90p against the entry and sat under 4139 for three hours before sliding to TP1. The honest wide stop behind the lower high 4146 held the whole ride. TP1 banked, runners taken out at breakeven on the second push up. Patience trade — ugly path, clean result." },
     { id:72, date:"2026-07-07", dir:"SHORT", entry:4160,   pips:-120, outcome:"SL",  grade:7,   kind:"limit",  note:"Published limit at the middle of the wide 4152-68 supply, filled on a post-news vertical that had already swept two lower highs on the way up. The same impulse went straight through the zone without a single rejection close and took the stop. The H1 closed above the zone right after — structure flipped up, the supply was already dead. Filled into momentum; no reject filter on a limit." },
     { id:73, date:"2026-07-07", dir:"LONG",  entry:4162,   pips:80,   outcome:"TP1", grade:7.5, kind:"market", note:"First touch of the fresh 15m FVG 4158.4-63 stacked with the H1 imbalance after the structure flip up. Tap, weak reclaim, then an active confirming bar with a new high — the tightened confirmation rule fired the entry. TP1 banked eleven minutes in, price pushed to 4178 missing TP2 by 16p, and the pullback took the runners out at breakeven. Textbook flip-and-go continuation." },
-    { id:74, date:"2026-07-07", dir:"LONG",  entry:4136.7, pips:73,   outcome:"TP1", grade:7,   kind:"market", note:"First touch of the last bullish 15m OB 4131.8-36.3 holding the up-leg. A razor-thin reclaim was confirmed by an active bar closing above the reject — entry on the sealed close. TP1 banked in 16 minutes, then the runner ground sideways under 4148 for two hours and the evening dump took it out at breakeven — minutes before price collapsed $45 to 4092. The split ladder banked the move and the BE stop dodged the crash." }
+    { id:74, date:"2026-07-07", dir:"LONG",  entry:4136.7, pips:73,   outcome:"TP1", grade:7,   kind:"market", note:"First touch of the last bullish 15m OB 4131.8-36.3 holding the up-leg. A razor-thin reclaim was confirmed by an active bar closing above the reject — entry on the sealed close. TP1 banked in 16 minutes, then the runner ground sideways under 4148 for two hours and the evening dump took it out at breakeven — minutes before price collapsed $45 to 4092. The split ladder banked the move and the BE stop dodged the crash." },
+    { id:77, date:"2026-07-10", dir:"SHORT", entry:4110,   pips:160,  outcome:"TP2", grade:7,   kind:"market", note:"Breakdown-retest short from the day plan: London broke the 4106.8 demand base, price retested 4106-10 from below and printed an impulsive 33p closed rejection off 4109.92 — entry on the sealed bar. Clean lower-low run with max drawdown of 6p: TP1 banked in 50 minutes, TP2 tagged at 4094.4. A V-reversal snapped price back above the trail level within minutes, so the runner was closed at 4098 locking the move. +160 to the furthest target. Winner." }
   ]
 };
