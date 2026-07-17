@@ -10,7 +10,7 @@
    Cancelled/expired signals -> update activity counters (no P&L).
 ============================================================ */
 window.GL_DATA = {
-  last_updated: "2026-07-16",
+  last_updated: "2026-07-17",
   activity: { cancelled: 30, pending: 0 },
   trades: [
     { id:4,  date:"2026-06-01", dir:"SHORT", entry:4479,   pips:70,   outcome:"TP1", grade:7, kind:"market", note:"First profit. TP1 hit, BE not moved (management lesson)." },
@@ -76,6 +76,7 @@ window.GL_DATA = {
     { id:84, date:"2026-07-16", dir:"LONG",  entry:4024,   pips:-23,  outcome:"SL",  grade:8, kind:"market", note:"Full §2B sweep-reclaim long: the 3-day liquidity pool 4013.7 was finally swept post-news and a 103p impulse bar reclaimed to 4024 — textbook trigger, SOLID grade. Minutes later fresh Trump headlines hit oil and gold rolled over; closed manually -23 before the second flush, well ahead of the stop. News beats structure — small controlled exit, not a stop-out." },
     { id:85, date:"2026-07-16", dir:"SHORT", entry:4023,   pips:300,  outcome:"TP3", grade:7, kind:"market", note:"Post-news re-analysis flipped the map: the reclaimed pool failed and 4024 became a fresh breakdown-retest supply. Sold the retest on a sluggish-but-structural closed rejection, filled on the bounce with positive slippage. The cascade ran all three targets in 40 minutes — TP1, TP2, TP3 at 3993. +300 pips, best trade of the month." },
     { id:86, date:"2026-07-16", dir:"LONG",  entry:3988,   pips:80,   outcome:"TP1", grade:8, kind:"market", note:"The same cascade landed on the major double-bottom 3983.5 — third sweep in four days. Sweep to 3975.6 first, a weak reclaim correctly held for the confirming bar (+52p impulse), then entry. TP1 banked in six minutes, price ran to 4008.5 but missed TP2, and the vertical pullback took the runner out at breakeven. +80 banked on a knife-catch done by the book." },
-    { id:87, date:"2026-07-16", dir:"SHORT", entry:4008,   pips:250,  outcome:"TP3", grade:7.5, kind:"market", note:"Night session sweep-and-fade at the retest of the spent pool 4008-4015.5: price tapped the zone, swept the far edge to 4017, and two bearish bars sealed a closed rejection at the lower edge — entry on the sealed bar with fills 15-20p in our favor. TP1 and TP2 banked on the grind down, TP3 3983 tagged on the broker feed. Full ladder, +250 pips. Four trades, three winners on the day." }
+    { id:87, date:"2026-07-16", dir:"SHORT", entry:4008,   pips:250,  outcome:"TP3", grade:7.5, kind:"market", note:"Night session sweep-and-fade at the retest of the spent pool 4008-4015.5: price tapped the zone, swept the far edge to 4017, and two bearish bars sealed a closed rejection at the lower edge — entry on the sealed bar with fills 15-20p in our favor. TP1 and TP2 banked on the grind down, TP3 3983 tagged on the broker feed. Full ladder, +250 pips. Four trades, three winners on the day." },
+    { id:88, date:"2026-07-17", dir:"LONG",  entry:3970,   pips:-80,  outcome:"SL", grade:7, kind:"market", note:"Full §2B sweep-reclaim long at the PDL pool 3969.3-73.7 on a Fed-repricing sell-off day: stops swept to 3965.4, a sluggish reclaim was confirmed by the next closed bar back above the edge — every branch of the tree checked. The final extension of the sweep then ran to a new low 3959.8, clipped the stop, and V-reversed +160p within minutes. Entered by the book, stopped at the very turn. Lesson queued: a sluggish two-bar confirmation at the lows is not an impulse reclaim — the pool was on its third sweep and exhausted." }
   ]
 };
