@@ -10,7 +10,7 @@
    Cancelled/expired signals -> update activity counters (no P&L).
 ============================================================ */
 window.GL_DATA = {
-  last_updated: "2026-08-26",
+  last_updated: "2026-08-27",
   activity: { cancelled: 33, pending: 0 },
   trades: [
     { id:4,  date:"2026-06-01", dir:"SHORT", entry:4479,   pips:70,   outcome:"TP1", grade:7, kind:"market", note:"First profit. TP1 hit, BE not moved (management lesson)." },
@@ -134,5 +134,6 @@ window.GL_DATA = {
     { id:143,date:"2026-08-25", dir:"LONG",  entry:4649,   pips:-111, outcome:"SL",  grade:8,   kind:"market", note:"Retest of the broken 4644/4650 roof after the breakout on volume - with-trend, textbook trigger at 19:00. Legs at 4650.9, stop 4638 under the double bottom. The pullback ground through the zone for half an hour, held 4638 by a quarter pip three times, then a late flush printed 4637.2 and the channel stop was done. The client had flattened the mirror by hand at 4644.7 twenty minutes earlier and saved half the loss on the account." },
     { id:144,date:"2026-08-26", dir:"SHORT", entry:4629,   pips:-46,  outcome:"SL",  grade:7,   kind:"market", note:"Retest of the broken low cluster 4629/4632.5 from above, with the trend of the day. Closed 3m reject at 09:33, three legs at 4628.8 average, stop 4636 behind the structure. Price had already run 26 pips past the trigger high before the fills, so the real risk was 72 pips instead of 46. Ten minutes later a spike printed 4636.5 and the channel stop was done. The client closed his two remaining legs by hand at 4637.07." },
     { id:145,date:"2026-08-26", dir:"LONG",  entry:4615,   pips:-40,  outcome:"SL",  grade:7,   kind:"market", note:"Post-news long off the 4612.5/4616 double bottom after the PCE flush swept 4609. The 3m closed 50 pips above the zone edge, an impulse trigger, so the entry went at the close with legs averaging 4614 and stop 4602 under the prior day low. Five minutes in the client called it early and asked to flatten - closed by hand at 4611.2 for a small loss on the account, and the channel was published as a manual close. No stop was hit; the setup simply was not given time." },
+    { id:146,date:"2026-08-27", dir:"SHORT", entry:4591,   pips:210,  outcome:"TP3", grade:7,   kind:"market", note:"Retest of the broken 4590.8/4594 shelf from above, the zone armed itself once the M15 closed under the 4600.7 low after the Jobless Claims flush. Closed 3m reject at 16:06, three legs, but the fills came 45 pips late at 4586.5 average, and the stop went to 4600 behind the 4595/4597 cluster rather than arithmetic off the fill. The whole sequence took 42 minutes: TP1 4584 at 16:15 with the stop to break-even, TP2 4576 at 16:33, TP3 4570 at 16:48 for 210 pips on the card. The client had already walked the server take down to 4564.5 himself and then closed the runner by hand at 4578.4, so the account banked 24.22 against the clean channel run." },
   ]
 };
