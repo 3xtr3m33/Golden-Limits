@@ -108,6 +108,7 @@
   .t-tp3{background:rgba(227,185,78,.15);color:var(--gold-soft)}
   .t-tp1{background:rgba(39,194,129,.12);color:var(--green)}
   .t-sl{background:rgba(239,91,91,.13);color:var(--red)}
+  .t-be{background:rgba(255,255,255,.06);color:var(--muted)}
   .note{color:var(--muted);font-size:12.5px}
   .id{color:var(--muted2);font-variant-numeric:tabular-nums}
   .pipv{font-weight:700;font-variant-numeric:tabular-nums}
@@ -590,6 +591,7 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
     {k:"TP3", lab:"Full winners (TP3)", col:"var(--gold)"},
     {k:"TP2", lab:"Partial winners (TP2)", col:"var(--green)"},
     {k:"TP1", lab:"Partial winners (TP1)", col:"var(--green)"},
+    {k:"BE",  lab:"Break-even (BE)", col:"var(--muted)"},
     {k:"SL",  lab:"Losses (SL)", col:"var(--red)"}
   ];
   const tot=TRADES.length;
@@ -736,7 +738,7 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
   const tbody=document.querySelector("#history tbody");
   const pager=document.getElementById("historyPager");
   const thead=document.querySelector("#history thead");
-  const resRank={TP3:4,TP2:3,TP1:2,SL:1};
+  const resRank={TP3:5,TP2:4,TP1:3,BE:2,SL:1};
   const accessors={
     id:    t=>t.id,
     date:  t=>t.date,            // YYYY-MM-DD sorts lexically
@@ -752,6 +754,7 @@ document.getElementById("updated").textContent = "Updated "+LAST_UPDATED;
     const tg=t.outcome==="TP3"?'<span class="tag t-tp3">TP3 ✦</span>':
              t.outcome==="TP2"?'<span class="tag t-tp1">TP2</span>':
              t.outcome==="TP1"?'<span class="tag t-tp1">TP1</span>':
+             t.outcome==="BE" ?'<span class="tag t-be">BE</span>':
              '<span class="tag t-sl">SL</span>';
     const pc=t.pips>=0?"pos":"neg";
     const kind=(t.kind||"market");
